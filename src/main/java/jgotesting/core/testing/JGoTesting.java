@@ -63,6 +63,6 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
 
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
-        return super.methodInvoker(method, test);
+        return new InvokeJGoTestingMethod(method, test);
     }
 }

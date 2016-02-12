@@ -26,6 +26,16 @@ public class T {
         return false;
     }
 
+    /** Fatal is equivalent to Log followed by FailNow */
+    public void fatal(Object ...args) {
+
+    }
+
+    /** Fatalf is equivalent to Logf followed by FailNow */
+    public void fatalf(String fmt, Object... args) {
+
+    }
+
     /** Log formats its arguments using default formatting, analogous to Println */
     public void log(Object ...args) {
 
@@ -35,4 +45,6 @@ public class T {
     public void logf(String format, Object ...args) {
 
     }
+
+    // TODO (maybe) skip, skipNow, skipf, skipped
 }
