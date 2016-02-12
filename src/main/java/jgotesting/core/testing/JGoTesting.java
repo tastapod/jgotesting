@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,13 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
         super(klass);
     }
 
+    /**
+     * Check each <code>@Test</code> method matches:
+     *
+     * <code>public void blah(T t) { ... }</code>
+     *
+     * @param errors collecting parameter for validation errors
+     */
     @Override
     protected void validateTestMethods(List<Throwable> errors) {
         List<FrameworkMethod> methods = getTestClass().getAnnotatedMethods(Test.class);
@@ -51,5 +59,10 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
 
     private Throwable error(FrameworkMethod method, String message) {
         return new RuntimeException("Method " + method.getName() + " " + message);
+    }
+
+    @Override
+    protected Statement methodInvoker(FrameworkMethod method, Object test) {
+        return super.methodInvoker(method, test);
     }
 }

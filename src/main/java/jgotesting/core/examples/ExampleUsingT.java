@@ -6,14 +6,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JGoTesting.class)
-public class TExamples {
+public class ExampleUsingT {
     @Test
     public void succeeds(T t) {
         // nothing happens, all is good
-    }
-
-    @Test
-    public void wrongShape() {
-        // should fail validation
     }
 }
