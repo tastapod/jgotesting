@@ -2,6 +2,7 @@ package jgotesting.core.testing;
 
 import jgotesting.core.testing.results.Fail;
 import jgotesting.core.testing.results.Message;
+import org.junit.Assert;
 import org.junit.runners.model.MultipleFailureException;
 
 import java.util.ArrayList;
@@ -13,13 +14,22 @@ public class T {
     private boolean failed = false;
 
     private void addError(String message) {
-        errors.add(trimStackTrace(new Fail(message)));
+        addError(new Fail(message));
+    }
+
+    private void addError(Throwable e) {
+        errors.add(trimStackTrace(e));
         failed = true;
     }
 
     /** marks the function as having failed but continues execution */
     public void fail() {
-        addError(null);
+        addError((String) null);
+    }
+
+    /** stores errer from elsewhere verbatim */
+    public void failWithError(Throwable t) {
+        addError(t);
     }
 
     /**  marks the function as having failed and stops its execution */
@@ -77,7 +87,10 @@ public class T {
      * @param t throwable whose stack trace we mutate
      */
     private Throwable trimStackTrace(Throwable t) {
-        final List<String> filteredClasses = Arrays.asList(T.class.getName(), Testing.class.getName());
+        final List<String> filteredClasses = Arrays.asList(
+                T.class.getName(),
+                Testing.class.getName(),
+                Assert.class.getName());
 
         final List<StackTraceElement> result = new ArrayList<StackTraceElement>();
 

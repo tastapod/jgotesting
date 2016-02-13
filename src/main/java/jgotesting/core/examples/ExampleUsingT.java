@@ -43,4 +43,11 @@ public class ExampleUsingT {
         log("First message is just logging");
         t.error("Second message is an error");
     }
+
+    @Test
+    public void usesAssertions() throws Exception {
+        assertTrue("oops, 1 should equal 2", false);
+        assertTrue("and 3 should equal 4", false);
+        //assertTrue(false); // default error message
+    }
 }
