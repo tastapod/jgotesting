@@ -2,9 +2,11 @@ package jgotesting.core.examples;
 
 import jgotesting.core.testing.JGoTesting;
 import jgotesting.core.testing.T;
-import static jgotesting.core.testing.Testing.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static jgotesting.core.testing.Assert.*;
+import static jgotesting.core.testing.Testing.*;
 
 @RunWith(JGoTesting.class)
 public class ExampleUsingT {
@@ -48,6 +50,7 @@ public class ExampleUsingT {
     public void usesAssertions() throws Exception {
         assertTrue("oops, 1 should equal 2", false);
         assertTrue("and 3 should equal 4", false);
-        //assertTrue(false); // default error message
+        assertEquals(3, 2);
+        assertNotNull(null); // default error message
     }
 }

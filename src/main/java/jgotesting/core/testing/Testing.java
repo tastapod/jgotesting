@@ -2,7 +2,7 @@ package jgotesting.core.testing;
 
 import org.junit.runners.model.MultipleFailureException;
 
-public class Testing extends Assert {
+public class Testing {
     private static ThreadLocal<T> instance = new ThreadLocal<T>();
 
     public static void error(Object... args) {
