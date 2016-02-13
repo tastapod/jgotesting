@@ -14,14 +14,14 @@
 
 ## Todo
 
-- implement T.fail()
-- implement other T methods (log, error, etc.)
-- report failures at end
-- implement T.failNow()
-- show multiple errors as test failures
-- have T.failIf(matcher), T.failIf(lambda), e.g. t.failIf(isNull(foo));
-- implement assert, assertEquals, etc. probably in T.Assert
-- have static import versions
+[x] implement T.fail()
+[x] implement other T methods (log, error, etc.)
+[x] report failures at end
+[x] implement T.failNow()
+[x] show multiple errors as test failures
+[ ] have T.failIf(matcher), T.failIf(lambda), e.g. t.failIf(isNull(foo));
+[ ] implement assert, assertEquals, etc. probably in T.Assert
+[ ] have static import versions
 
 ## Behaviour that needs tests
 

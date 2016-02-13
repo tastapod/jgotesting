@@ -11,11 +11,19 @@ public class T {
     private boolean failed = false;
 
     private void addError(String message) {
-        final Throwable here = new Throwable();
-        StackTraceElement[] stackTrace = here.getStackTrace();
-        here.setStackTrace(Arrays.copyOfRange(stackTrace, 2, stackTrace.length));
-        errors.add(here);
+        errors.add(trimStackTrace(new Fail(message), 2));
         failed = true;
+    }
+
+    /**
+     * Remove innermost two elements from a stack trace
+     *
+     * @param t throwable whose stack trace we mutate
+     */
+    private Throwable trimStackTrace(Throwable t, int levels) {
+        StackTraceElement[] stackTrace = t.getStackTrace();
+        t.setStackTrace(Arrays.copyOfRange(stackTrace, levels, stackTrace.length));
+        return t;
     }
 
     /** marks the function as having failed but continues execution */
@@ -29,9 +37,25 @@ public class T {
         throw new MultipleFailureException(errors);
     }
 
-    /** Log formats its arguments using default formatting, analogous to Println */
+    /** formats its arguments using default formatting, analogous to println */
     public void log(Object ...args) {
+        errors.add(trimStackTrace(new Message(buildMessage(args)), 1));
+    }
 
+    /**
+     * Ugly Java 7 way to do args.join(" ")
+     */
+    private String buildMessage(Object[] args) {
+        final StringBuilder out = new StringBuilder();
+
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            out.append(String.valueOf(arg));
+            if (i < args.length - 1) {
+                out.append(" ");
+            }
+        }
+        return out.toString();
     }
 
     /** Logf formats its arguments using default formatting, analogous to Printf */
@@ -41,7 +65,7 @@ public class T {
 
     /** Error is equivalent to Log followed by Fail */
     public void error(Object ...args) {
-
+        addError(buildMessage(args));
     }
 
     /** Errorf is equivalent to Logf followed by Fail */

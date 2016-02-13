@@ -5,8 +5,6 @@ import jgotesting.core.testing.T;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-
 @RunWith(JGoTesting.class)
 public class ExampleUsingT {
     @Test
@@ -15,10 +13,9 @@ public class ExampleUsingT {
     }
 
     @Test
-    public void fails(T t) throws Exception {
-        t.fail();
-        t.failNow();
-        System.out.println("Hello");
+    public void thisFails(T t) throws Exception {
+        t.log("Here's a thing!");
+        t.error("Oops");
         t.fail();
     }
 }
