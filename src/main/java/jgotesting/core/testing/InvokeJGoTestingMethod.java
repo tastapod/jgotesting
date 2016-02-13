@@ -16,11 +16,21 @@ public class InvokeJGoTestingMethod extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
-        method.invokeExplosively(target, t);
+        Testing.setInstance(t);
+
+        if (methodTakesParameter()) {
+            method.invokeExplosively(target, t);
+        } else {
+            method.invokeExplosively(target);
+        }
 
         // if we get here the method completed without throwing an exception
         if (t.failed()) {
             throw new MultipleFailureException(t.getErrors());
         }
+    }
+
+    private boolean methodTakesParameter() {
+        return method.getMethod().getParameterTypes().length == 1;
     }
 }

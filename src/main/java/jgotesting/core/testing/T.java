@@ -1,8 +1,11 @@
 package jgotesting.core.testing;
 
+import jgotesting.core.testing.results.Fail;
+import jgotesting.core.testing.results.Message;
 import org.junit.runners.model.MultipleFailureException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class T {
@@ -74,13 +77,16 @@ public class T {
      * @param t throwable whose stack trace we mutate
      */
     private Throwable trimStackTrace(Throwable t) {
-        final List<StackTraceElement> stack = new ArrayList<StackTraceElement>();
+        final List<String> filteredClasses = Arrays.asList(T.class.getName(), Testing.class.getName());
+
+        final List<StackTraceElement> result = new ArrayList<StackTraceElement>();
+
         for (StackTraceElement element : t.getStackTrace()) {
-            if (!element.getClassName().equals(this.getClass().getName())) {
-                stack.add(element);
+            if (!filteredClasses.contains(element.getClassName())) {
+                result.add(element);
             }
         }
-        t.setStackTrace(stack.toArray(new StackTraceElement[stack.size()]));
+        t.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
         return t;
     }
 

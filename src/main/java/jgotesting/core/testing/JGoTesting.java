@@ -24,7 +24,7 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
     @Override
     protected void validateTestMethods(List<Throwable> errors) {
         for (FrameworkMethod method : getTestClass().getAnnotatedMethods(Test.class)) {
-            validatePublicVoidTakesSingleT(method, errors);
+            validateMethodSignature(method, errors);
         }
     }
 
@@ -35,28 +35,24 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
      * - is not void
      * - takes anything other than single parameter T
      */
-    private void validatePublicVoidTakesSingleT(FrameworkMethod method, List<Throwable> errors) {
-        final Class<?>[] singleParameterT = {T.class};
+    private void validateMethodSignature(FrameworkMethod method, List<Throwable> errors) {
+        final List<Class<?>> singleParameterT = Arrays.asList(new Class<?>[]{T.class});
+        final List<Class<?>> noParameters = Arrays.asList(new Class<?>[]{});
+        final List<Class<?>> params = Arrays.asList(method.getMethod().getParameterTypes());
 
-        if (method.isStatic()) {
-            errors.add(error(method, "should not be static"));
-        }
+        if (method.isStatic()) addError(method, "should not be static", errors);
 
-        if (!method.isPublic()) {
-            errors.add(error(method, "should be public"));
-        }
+        if (!method.isPublic()) addError(method, "should be public", errors);
 
-        if (!(method.getReturnType()).equals(Void.TYPE)) {
-            errors.add(error(method, "should be void"));
-        }
+        if (!(method.getReturnType()).equals(Void.TYPE)) addError(method, "should be void", errors);
 
-        if (!Arrays.equals(method.getMethod().getParameterTypes(), singleParameterT)) {
-            errors.add(error(method, "should take a single T parameter"));
+        if (!(singleParameterT.equals(params) || noParameters.equals(params))) {
+            addError(method, "should take no params or a single T parameter", errors);
         }
     }
 
-    private Throwable error(FrameworkMethod method, String message) {
-        return new RuntimeException("Method " + method.getName() + " " + message);
+    private void addError(FrameworkMethod method, String message, List<Throwable> errors) {
+        errors.add(new RuntimeException("Method " + method.getName() + " " + message));
     }
 
     @Override

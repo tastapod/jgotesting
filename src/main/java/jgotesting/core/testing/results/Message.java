@@ -1,4 +1,4 @@
-package jgotesting.core.testing;
+package jgotesting.core.testing.results;
 
 public class Message extends Throwable {
     public Message(String message) {
