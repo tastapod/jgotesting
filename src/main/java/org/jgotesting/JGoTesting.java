@@ -1,4 +1,4 @@
-package jgotesting.core.testing;
+package org.jgotesting;
 
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -9,6 +9,13 @@ import org.junit.runners.model.Statement;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * {@link org.junit.runner.Runner} that allows a test to continue
+ * after a failure, so a single test can contain multiple checks.
+ *
+ * See {@link org.jgotesting.examples.ExampleUsingT ExampleUsingT}
+ * for some examples.
+ */
 public class JGoTesting extends BlockJUnit4ClassRunner {
     public JGoTesting(Class<?> klass) throws InitializationError {
         super(klass);

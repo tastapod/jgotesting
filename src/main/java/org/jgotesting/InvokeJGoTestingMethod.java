@@ -1,4 +1,4 @@
-package jgotesting.core.testing;
+package org.jgotesting;
 
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.MultipleFailureException;

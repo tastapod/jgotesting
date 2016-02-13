@@ -1,4 +1,4 @@
-package jgotesting.core.testing.results;
+package org.jgotesting.results;
 
 public class Fail extends RuntimeException {
     public Fail(String message) {

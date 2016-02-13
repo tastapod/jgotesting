@@ -1,7 +1,7 @@
-package jgotesting.core.testing;
+package org.jgotesting;
 
-import jgotesting.core.testing.results.Fail;
-import jgotesting.core.testing.results.Message;
+import org.jgotesting.results.Fail;
+import org.jgotesting.results.Message;
 import org.junit.Assert;
 import org.junit.runners.model.MultipleFailureException;
 
