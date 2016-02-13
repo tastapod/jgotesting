@@ -14,8 +14,19 @@ public class ExampleUsingT {
 
     @Test
     public void thisFails(T t) throws Exception {
-        t.log("Here's a thing!");
-        t.error("Oops");
         t.fail();
+    }
+
+    @Test
+    public void thisErrors(T t) throws Exception {
+        t.error("Something bad happened");
+        t.error("Twice!");
+    }
+
+    @Test
+    public void thisTerminatesPartWayThrough(T t) throws Exception {
+        t.error("Something bad happened");
+        t.failNow();
+        t.error("This never gets reported");
     }
 }

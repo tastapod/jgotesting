@@ -22,7 +22,7 @@ public class T {
     /**  marks the function as having failed and stops its execution */
     public void failNow() throws MultipleFailureException {
         fail();
-        throw new MultipleFailureException(errors);
+        terminate();
     }
 
     /** formats its arguments using default formatting, analogous to println */
@@ -35,24 +35,26 @@ public class T {
         log(String.format(format, args));
     }
 
-    /** Error is equivalent to Log followed by Fail */
+    /** equivalent to log followed by fail */
     public void error(Object ...args) {
         addError(buildMessage(args));
     }
 
-    /** Errorf is equivalent to Logf followed by Fail */
+    /** equivalent to logf followed by fail */
     public void errorf(String fmt, Object... args) {
         error(String.format(fmt, args));
     }
 
-    /** Fatal is equivalent to Log followed by FailNow */
-    public void fatal(Object ...args) {
-
+    /** equivalent to Log followed by FailNow */
+    public void fatal(Object ...args) throws MultipleFailureException {
+        error(args);
+        terminate();
     }
 
-    /** Fatalf is equivalent to Logf followed by FailNow */
-    public void fatalf(String fmt, Object... args) {
-
+    /** equivalent to logf followed by failNow */
+    public void fatalf(String fmt, Object... args) throws MultipleFailureException {
+        errorf(fmt, args);
+        terminate();
     }
 
     /**  Failed reports whether the function has failed */
@@ -60,9 +62,7 @@ public class T {
         return failed;
     }
 
-    public void skipNow() {
-
-    }
+    // TODO (maybe) skip, skipNow, skipf, skipped
 
     public List<Throwable> getErrors() {
         return errors;
@@ -100,6 +100,7 @@ public class T {
         return out.toString();
     }
 
-
-    // TODO (maybe) skip, skipNow, skipf, skipped
+    private void terminate() throws MultipleFailureException {
+        throw new MultipleFailureException(errors);
+    }
 }

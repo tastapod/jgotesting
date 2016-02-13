@@ -19,9 +19,9 @@
 [x] report failures at end
 [x] implement T.failNow()
 [x] show multiple errors as test failures
-[ ] have T.failIf(matcher), T.failIf(lambda), e.g. t.failIf(isNull(foo));
 [ ] implement assert, assertEquals, etc. probably in T.Assert
 [ ] have static import versions
+[ ] have T.failIf(matcher), T.failIf(lambda), e.g. t.failIf(isNull(foo));
 
 ## Behaviour that needs tests
 
@@ -31,8 +31,11 @@
 
 ### T
 
-- fail() registers a failure
+- `fail()`, `error()` etc. register messages and mark as failed
+- `log`, `logf` register messages and don't mark as failed
+- `fatal`, `failNow`, etc. throw an exception
+
 
 ### InvokeJGoTestingMethod
 
-- throws JGoTestingFailure if there was a failure
+- throws exception if there was a failure
