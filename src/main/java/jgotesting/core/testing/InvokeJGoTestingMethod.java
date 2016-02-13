@@ -16,6 +16,8 @@ public class InvokeJGoTestingMethod extends Statement {
     @Override
     public void evaluate() throws Throwable {
         method.invokeExplosively(target, t);
+
+        // if we get here the method completed without throwing an exception
         if (t.failed()) {
             throw new JGoTestingFailure(t);
         }

@@ -23,9 +23,7 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
      */
     @Override
     protected void validateTestMethods(List<Throwable> errors) {
-        List<FrameworkMethod> methods = getTestClass().getAnnotatedMethods(Test.class);
-
-        for (FrameworkMethod method : methods) {
+        for (FrameworkMethod method : getTestClass().getAnnotatedMethods(Test.class)) {
             validatePublicVoidTakesSingleT(method, errors);
         }
     }
