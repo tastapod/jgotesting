@@ -3,7 +3,6 @@ package jgotesting.core.testing;
 import org.junit.runners.model.MultipleFailureException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class T {
@@ -11,19 +10,8 @@ public class T {
     private boolean failed = false;
 
     private void addError(String message) {
-        errors.add(trimStackTrace(new Fail(message), 2));
+        errors.add(trimStackTrace(new Fail(message)));
         failed = true;
-    }
-
-    /**
-     * Remove innermost two elements from a stack trace
-     *
-     * @param t throwable whose stack trace we mutate
-     */
-    private Throwable trimStackTrace(Throwable t, int levels) {
-        StackTraceElement[] stackTrace = t.getStackTrace();
-        t.setStackTrace(Arrays.copyOfRange(stackTrace, levels, stackTrace.length));
-        return t;
     }
 
     /** marks the function as having failed but continues execution */
@@ -33,34 +21,18 @@ public class T {
 
     /**  marks the function as having failed and stops its execution */
     public void failNow() throws MultipleFailureException {
-        addError(null);
+        fail();
         throw new MultipleFailureException(errors);
     }
 
     /** formats its arguments using default formatting, analogous to println */
     public void log(Object ...args) {
-        errors.add(trimStackTrace(new Message(buildMessage(args)), 1));
-    }
-
-    /**
-     * Ugly Java 7 way to do args.join(" ")
-     */
-    private String buildMessage(Object[] args) {
-        final StringBuilder out = new StringBuilder();
-
-        for (int i = 0; i < args.length; i++) {
-            Object arg = args[i];
-            out.append(String.valueOf(arg));
-            if (i < args.length - 1) {
-                out.append(" ");
-            }
-        }
-        return out.toString();
+        errors.add(trimStackTrace(new Message(buildMessage(args))));
     }
 
     /** Logf formats its arguments using default formatting, analogous to Printf */
     public void logf(String format, Object ...args) {
-
+        log(String.format(format, args));
     }
 
     /** Error is equivalent to Log followed by Fail */
@@ -70,7 +42,7 @@ public class T {
 
     /** Errorf is equivalent to Logf followed by Fail */
     public void errorf(String fmt, Object... args) {
-
+        error(String.format(fmt, args));
     }
 
     /** Fatal is equivalent to Log followed by FailNow */
@@ -95,6 +67,39 @@ public class T {
     public List<Throwable> getErrors() {
         return errors;
     }
+
+    /**
+     * Remove references to ourselves from a stack trace
+     *
+     * @param t throwable whose stack trace we mutate
+     */
+    private Throwable trimStackTrace(Throwable t) {
+        final List<StackTraceElement> stack = new ArrayList<StackTraceElement>();
+        for (StackTraceElement element : t.getStackTrace()) {
+            if (!element.getClassName().equals(this.getClass().getName())) {
+                stack.add(element);
+            }
+        }
+        t.setStackTrace(stack.toArray(new StackTraceElement[stack.size()]));
+        return t;
+    }
+
+    /**
+     * Ugly Java 7 way to do args.join(" ")
+     */
+    private String buildMessage(Object[] args) {
+        final StringBuilder out = new StringBuilder();
+
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            out.append(String.valueOf(arg));
+            if (i < args.length - 1) {
+                out.append(" ");
+            }
+        }
+        return out.toString();
+    }
+
 
     // TODO (maybe) skip, skipNow, skipf, skipped
 }
