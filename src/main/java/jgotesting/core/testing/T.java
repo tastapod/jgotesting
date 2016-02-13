@@ -1,5 +1,7 @@
 package jgotesting.core.testing;
 
+import org.junit.runners.model.MultipleFailureException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +12,8 @@ public class T {
 
     private void addError(String message) {
         final Throwable here = new Throwable();
+        StackTraceElement[] stackTrace = here.getStackTrace();
+        here.setStackTrace(Arrays.copyOfRange(stackTrace, 2, stackTrace.length));
         errors.add(here);
         failed = true;
     }
@@ -20,11 +24,10 @@ public class T {
     }
 
     /**  marks the function as having failed and stops its execution */
-    public void failNow() {
-        fail();
-        throw new JGoTestingFailure(this);
+    public void failNow() throws MultipleFailureException {
+        addError(null);
+        throw new MultipleFailureException(errors);
     }
-
 
     /** Log formats its arguments using default formatting, analogous to Println */
     public void log(Object ...args) {
@@ -65,7 +68,8 @@ public class T {
 
     }
 
-    public static class Error {
+    public List<Throwable> getErrors() {
+        return errors;
     }
 
     // TODO (maybe) skip, skipNow, skipf, skipped

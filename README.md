@@ -12,6 +12,17 @@
 - Write a custom `org.junit.runner.Runner` (maybe extend `BlockJUnit4ClassRunner`)
 - Write a custom `org.junit.runners.model.Statement` that injects a T and captures its output
 
+## Todo
+
+- implement T.fail()
+- implement other T methods (log, error, etc.)
+- report failures at end
+- implement T.failNow()
+- show multiple errors as test failures
+- have T.failIf(matcher), T.failIf(lambda), e.g. t.failIf(isNull(foo));
+- implement assert, assertEquals, etc. probably in T.Assert
+- have static import versions
+
 ## Behaviour that needs tests
 
 ### JGoTesting
