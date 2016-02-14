@@ -45,7 +45,7 @@ public class T {
      * log a message which is only displayed if the test fails
      */
     public void log(Object... args) {
-        events.add(new Message(join(args)));
+        events.add(trimStackTrace(new Message(join(args))));
     }
 
     /**
