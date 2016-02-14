@@ -11,11 +11,12 @@ import static org.jgotesting.Assert.*;
 @RunWith(JGoTesting.class)
 public class ExampleUsingT {
     @Test
-    public void succeedsWithParam(T t) {
+    public void succeedsWithoutParam() {
     }
 
     @Test
-    public void succeedsWithoutParam() {
+    @SuppressWarnings("UnusedParameters")
+    public void succeedsWithParam(T t) {
     }
 
     @Test
@@ -52,9 +53,12 @@ public class ExampleUsingT {
 
     @Test
     public void thisUsesAssertions() throws Exception {
-        assertTrue("oops, 1 should equal 2", false);
-        assertTrue("and 3 should equal 4", false);
+        assertTrue("oops", false);
+
+        assertNotNull(null);
+
+        assertEquals(1, 2);
+
         assertEquals(3, 2);
-        assertNotNull(null); // default error message
     }
 }

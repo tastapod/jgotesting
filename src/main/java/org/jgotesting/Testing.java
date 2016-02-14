@@ -3,7 +3,6 @@ package org.jgotesting;
 import org.junit.runners.model.MultipleFailureException;
 
 public class Testing {
-    private static ThreadLocal<T> instance = new ThreadLocal<T>();
 
     public static void error(Object... args) {
         t().error(args);
@@ -37,15 +36,11 @@ public class Testing {
         t().logf(format, args);
     }
 
-    static void setInstance(T t) {
-        instance.set(t);
-    }
-
     static T t() {
-        return instance.get();
+        return T.get();
     }
 
-    public static void failWithError(Throwable t) {
-        t().failWithError(t);
+    public static void failWithException(Throwable t) {
+        t().failWithException(t);
     }
 }

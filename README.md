@@ -19,7 +19,7 @@
 [x] report failures at end
 [x] implement T.failNow()
 [x] show multiple errors as test failures
-[ ] implement assert, assertEquals, etc. probably in T.Assert
+[ ] implement assert, assertEquals, etc. probably in Assert
 [x] have static import versions
 [ ] have T.failIf(matcher), T.failIf(lambda), e.g. t.failIf(isNull(foo));
 

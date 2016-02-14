@@ -10,8 +10,33 @@ import java.util.Arrays;
 import java.util.List;
 
 public class T {
+    private static ThreadLocal<T> instance = new ThreadLocal<T>();
+
     private final List<Throwable> errors = new ArrayList<Throwable>();
     private boolean failed = false;
+
+    /**
+     * Manage our own construction to synchronise with the ThreadLocal instance
+     */
+    protected T() {
+
+    }
+
+    public static T create() {
+        T t = new T();
+        instance.set(t);
+        return t;
+    }
+
+    public static void destroy() {
+        instance.set(null);
+    }
+
+    public static T get() {
+        final T t = instance.get();
+        assert t != null : "Annotate your test with @RunWith(JGoTesting.class)";
+        return t;
+    }
 
     private void addError(String message) {
         addError(new Fail(message));
@@ -28,7 +53,7 @@ public class T {
     }
 
     /** stores errer from elsewhere verbatim */
-    public void failWithError(Throwable t) {
+    public void failWithException(Throwable t) {
         addError(t);
     }
 

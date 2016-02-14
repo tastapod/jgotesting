@@ -1,7 +1,5 @@
 package org.jgotesting;
 
-import org.jgotesting.Testing;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,9 +12,9 @@ import java.util.Map;
 public class Assert {
 
     private static InvocationHandler delegateToStaticAssertMethod = new DelegateToStaticMethod(org.junit.Assert.class);
-    private static Assertions delegate = (Assertions) Proxy.newProxyInstance(
-            Assertions.class.getClassLoader(),
-            new Class[] { Assertions.class },
+    private static JUnitAssertions delegate = (JUnitAssertions) Proxy.newProxyInstance(
+            JUnitAssertions.class.getClassLoader(),
+            new Class[] { JUnitAssertions.class },
             delegateToStaticAssertMethod);
 
     /**
@@ -28,7 +26,7 @@ public class Assert {
     /**
      * tracks the signatures of all the static assert methods in {@link org.junit.Assert}
      */
-    interface Assertions {
+    interface JUnitAssertions {
         void assertTrue(String message, boolean condition);
         void assertTrue(boolean condition);
         void assertFalse(String message, boolean condition);
@@ -62,13 +60,12 @@ public class Assert {
     }
 
     /**
-     * invokes static method on e.g. {@link org.junit.Assert}</code>
-     * with the same name and parameters as a method invoked on a
-     * dynamic proxy.
+     * invokes static method with the same name and parameters as a method
+     * invoked on a dynamic proxy.
      *
-     * <p>The method is wrapped to intercept an {@link AssertionError}
-     * and post a JGoTesting error. This allows multiple assertions
-     * within the same test.</p>
+     * <p>The method intercepts an {@link AssertionError} and
+     * posts a JGoTesting error instead of unrolling the stack.
+     * This allows multiple assertions within the same test.</p>
      */
     static class DelegateToStaticMethod implements InvocationHandler {
         private final Map<MethodSignature, Method> staticMethods;
@@ -128,17 +125,18 @@ public class Assert {
             try {
                 return staticMethod.invoke(null, args);
             } catch (InvocationTargetException e) {
-                if (e.getTargetException() instanceof AssertionError) {
-                    Testing.failWithError(e.getTargetException());
+                final Throwable cause = e.getCause();
+                if (cause instanceof AssertionError) {
+                    Testing.failWithException(cause);
                     return null;
                 } else {
-                   throw e.getTargetException();
+                   throw cause;
                 }
             }
         }
     }
 
-    // All the delegates
+    // Everything after here is generated
 
     public static void assertEquals(double expected, double actual) {
         delegate.assertEquals(expected, actual);

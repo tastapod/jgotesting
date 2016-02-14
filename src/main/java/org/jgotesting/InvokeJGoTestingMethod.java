@@ -7,7 +7,6 @@ import org.junit.runners.model.Statement;
 public class InvokeJGoTestingMethod extends Statement {
     private final FrameworkMethod method;
     private final Object target;
-    private final T t = new T();
 
     public InvokeJGoTestingMethod(FrameworkMethod method, Object target) {
         this.method = method;
@@ -16,17 +15,21 @@ public class InvokeJGoTestingMethod extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
-        Testing.setInstance(t);
+        try {
+            final T t = T.create();
 
-        if (methodTakesParameter()) {
-            method.invokeExplosively(target, t);
-        } else {
-            method.invokeExplosively(target);
-        }
+            if (methodTakesParameter()) {
+                method.invokeExplosively(target, t);
+            } else {
+                method.invokeExplosively(target);
+            }
 
-        // if we get here the method completed without throwing an exception
-        if (t.failed()) {
-            throw new MultipleFailureException(t.getErrors());
+            // if we get here the method completed without throwing an exception
+            if (t.failed()) {
+                throw new MultipleFailureException(t.getErrors());
+            }
+        } finally {
+            T.destroy();
         }
     }
 
