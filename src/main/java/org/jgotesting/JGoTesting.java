@@ -62,6 +62,8 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
         errors.add(new RuntimeException("Method " + method.getName() + " " + message));
     }
 
+
+
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         return new InvokeJGoTestingMethod(method, test);

@@ -53,8 +53,8 @@ public class ExampleUsingT {
 
     /**
      * Note: IntelliJ intercepts JUnit assert-style output so it can
-     *       do things like diffing <code>assertEquals</code> values,
-     *       so it doesn't show the output from <code>assertTrue</code>
+     *       do things like diffing <code>assertEquals</code> parameters,
+     *       and it seems to swallow the output from <code>assertTrue</code>
      *       or <code>assertNotNull</code>, but these still work correctly.
      */
     @Test

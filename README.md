@@ -14,28 +14,29 @@
 
 ## Todo
 
-[x] implement T.fail()
-[x] implement other T methods (log, error, etc.)
-[x] report failures at end
-[x] implement T.failNow()
-[x] show multiple errors as test failures
-[ ] implement assert, assertEquals, etc. probably in Assert
-[x] have static import versions
-[ ] have T.failIf(matcher), T.failIf(lambda), e.g. t.failIf(isNull(foo));
+- [x] implement T.fail()
+- [x] implement other T methods (log, error, etc.)
+- [x] report failures at end
+- [x] implement T.failNow()
+- [x] show multiple errors as test failures
+- [x] implement assert, assertEquals, etc. probably in Assert
+- [x] have static import versions
+- [x] have T.failIf(matcher), T.failUnless(matcher), so t.failNowIf(foo, nullValue());
 
 ## Behaviour that needs tests
 
 ### JGoTesting
 
-- checks the `@Test` method is public, non-static, void and takes a single T parameter
+- [ ] checks the `@Test` method is public, non-static, void and takes a single T parameter
 
 ### T
 
-- `fail()`, `error()` etc. register messages and mark as failed
-- `log`, `logf` register messages and don't mark as failed
-- `fatal`, `failNow`, etc. throw an exception
+- [ ] `fail()`, `error()` etc. register messages and mark as failed
+- [ ] `log`, `logf` register messages and don't mark as failed
+- [ ] `fatal`, `failNow`, etc. throw an exception
+- [ ] Hamcrest matchers work
 
 
 ### InvokeJGoTestingMethod
 
-- throws exception if there was a failure
+- [ ] throws an exception if there was a failure
