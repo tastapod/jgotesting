@@ -15,6 +15,8 @@ public class Assert {
     protected Assert() {
     }
 
+    // assertBlah methods generated from delegate, and then made static
+
     public static void assertEquals(double expected, double actual) {
         delegate.assertEquals(expected, actual);
     }
@@ -129,21 +131,23 @@ public class Assert {
 
     // Here's how it works
 
+    /**
+     * Dynamic proxy to call static methods on {@link org.junit.Assert}
+     * and intercept {@link AssertionError}
+     */
     private static JUnitAssertions delegate = (JUnitAssertions) Proxy.newProxyInstance(
             JUnitAssertions.class.getClassLoader(),
             new Class[] { JUnitAssertions.class },
             new DelegateToStaticMethod(org.junit.Assert.class));
 
     /**
-     * tracks the signatures of all the static assert methods in {@link org.junit.Assert}
+     * tracks the signatures of the static assert methods in {@link org.junit.Assert}
      */
     interface JUnitAssertions {
         void assertTrue(String message, boolean condition);
         void assertTrue(boolean condition);
         void assertFalse(String message, boolean condition);
         void assertFalse(boolean condition);
-        void fail(String message);
-        void fail();
         void assertEquals(String message, Object expected, Object actual);
         void assertEquals(Object expected, Object actual);
         void assertNotEquals(String message, Object first, Object second);
@@ -175,8 +179,9 @@ public class Assert {
      * invoked on a dynamic proxy.
      *
      * <p>The method intercepts an {@link AssertionError} and
-     * posts a JGoTesting error instead of unrolling the stack.
-     * This allows multiple assertions within the same test.</p>
+     * posts a {@link org.jgotesting.results.Fail JGoTesting error}
+     * instead of unrolling the stack. This allows multiple assertions
+     * within the same test.</p>
      */
     static class DelegateToStaticMethod implements InvocationHandler {
         private final Map<MethodSignature, Method> staticMethods;

@@ -27,30 +27,36 @@ public class ExampleUsingT {
 
     @Test
     public void thisFailsWithMessages(T t) throws Exception {
-        t.error("Something bad happened");
-        t.error("Twice!");
+        t.fail("Something bad happened");
+        t.fail("Twice!");
     }
 
     @Test
     public void thisTerminatesPartWayThrough(T t) throws Exception {
-        t.error("Something bad happened");
+        t.fail("Something bad happened");
         t.failNow();
-        t.error("This never gets reported");
+        t.fail("This never gets reported");
     }
 
     @Test
     public void thisUsesStaticMethods() throws Exception {
         log("Just shooting the breeze");
-        error("Something went wrong");
+        fail("Something went wrong");
         failNow();
     }
 
     @Test
     public void thisUsesMixOfStaticAndParameterMethods(T t) throws Exception {
         log("First message is just logging");
-        t.error("Second message is an error");
+        t.fail("Second message is an error");
     }
 
+    /**
+     * Note: IntelliJ intercepts JUnit assert-style output so it can
+     *       do things like diffing <code>assertEquals</code> values,
+     *       so it doesn't show the output from <code>assertTrue</code>
+     *       or <code>assertNotNull</code>, but these still work correctly.
+     */
     @Test
     public void thisUsesAssertions() throws Exception {
         assertTrue("oops", false);

@@ -10,13 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class T {
-    private static ThreadLocal<T> instance = new ThreadLocal<T>();
+    private static final ThreadLocal<T> instance = new ThreadLocal<T>();
 
     private final List<Throwable> errors = new ArrayList<Throwable>();
     private boolean failed = false;
 
     /**
-     * Manage our own construction to synchronise with the ThreadLocal instance
+     * Manage access to the ThreadLocal instance
      */
     protected T() {
 
@@ -34,38 +34,13 @@ public class T {
 
     public static T get() {
         final T t = instance.get();
-        assert t != null : "Annotate your test with @RunWith(JGoTesting.class)";
+        assert t != null : "Annotate your test class with @RunWith(JGoTesting.class)";
         return t;
-    }
-
-    private void addError(String message) {
-        addError(new Fail(message));
-    }
-
-    private void addError(Throwable e) {
-        errors.add(trimStackTrace(e));
-        failed = true;
-    }
-
-    /** marks the function as having failed but continues execution */
-    public void fail() {
-        addError((String) null);
-    }
-
-    /** stores errer from elsewhere verbatim */
-    public void failWithException(Throwable t) {
-        addError(t);
-    }
-
-    /**  marks the function as having failed and stops its execution */
-    public void failNow() throws MultipleFailureException {
-        fail();
-        terminate();
     }
 
     /** formats its arguments using default formatting, analogous to println */
     public void log(Object ...args) {
-        errors.add(trimStackTrace(new Message(buildMessage(args))));
+        errors.add(trimStackTrace(new Message(join(args))));
     }
 
     /** Logf formats its arguments using default formatting, analogous to Printf */
@@ -73,25 +48,30 @@ public class T {
         log(String.format(format, args));
     }
 
-    /** equivalent to log followed by fail */
-    public void error(Object ...args) {
-        addError(buildMessage(args));
+    /** marks the function as having failed but continues execution */
+    public void fail(Object ...args) {
+        addError(join(args));
     }
 
     /** equivalent to logf followed by fail */
-    public void errorf(String fmt, Object... args) {
-        error(String.format(fmt, args));
+    public void failf(String fmt, Object... args) {
+        fail(String.format(fmt, args));
     }
 
-    /** equivalent to Log followed by FailNow */
-    public void fatal(Object ...args) throws MultipleFailureException {
-        error(args);
+    /** stores error from elsewhere verbatim */
+    public void failWithException(Throwable t) {
+        addError(t);
+    }
+
+    /**  marks the function as having failed and stops its execution */
+    public void failNow(Object ...args) throws MultipleFailureException {
+        fail(args);
         terminate();
     }
 
     /** equivalent to logf followed by failNow */
-    public void fatalf(String fmt, Object... args) throws MultipleFailureException {
-        errorf(fmt, args);
+    public void failfNow(String fmt, Object... args) throws MultipleFailureException {
+        failf(fmt, args);
         terminate();
     }
 
@@ -128,20 +108,29 @@ public class T {
         return t;
     }
 
+    private void addError(String message) {
+        addError(new Fail(message));
+    }
+
+    private void addError(Throwable e) {
+        errors.add(trimStackTrace(e));
+        failed = true;
+    }
+
     /**
      * Ugly Java 7 way to do args.join(" ")
      */
-    private String buildMessage(Object[] args) {
-        final StringBuilder out = new StringBuilder();
+    private String join(Object[] args) {
+        final StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
-            out.append(String.valueOf(arg));
+            result.append(String.valueOf(arg));
             if (i < args.length - 1) {
-                out.append(" ");
+                result.append(" ");
             }
         }
-        return out.toString();
+        return result.toString();
     }
 
     private void terminate() throws MultipleFailureException {

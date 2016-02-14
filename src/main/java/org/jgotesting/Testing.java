@@ -2,31 +2,8 @@ package org.jgotesting;
 
 import org.junit.runners.model.MultipleFailureException;
 
+@SuppressWarnings("unused")
 public class Testing {
-
-    public static void error(Object... args) {
-        t().error(args);
-    }
-
-    public static void errorf(String fmt, Object... args) {
-        t().errorf(fmt, args);
-    }
-
-    public static void fail() {
-        t().fail();
-    }
-
-    public static void failNow() throws MultipleFailureException {
-        t().failNow();
-    }
-
-    public static void fatal(Object... args) throws MultipleFailureException {
-        t().fatal(args);
-    }
-
-    public static void fatalf(String fmt, Object... args) throws MultipleFailureException {
-        t().fatalf(fmt, args);
-    }
 
     public static void log(Object... args) {
         t().log(args);
@@ -36,11 +13,27 @@ public class Testing {
         t().logf(format, args);
     }
 
-    static T t() {
-        return T.get();
+    public static void fail(Object... args) {
+        t().fail(args);
+    }
+
+    public static void failf(String fmt, Object... args) {
+        t().failf(fmt, args);
     }
 
     public static void failWithException(Throwable t) {
         t().failWithException(t);
+    }
+
+    public static void failNow(Object... args) throws MultipleFailureException {
+        t().failNow(args);
+    }
+
+    public static void failfNow(String fmt, Object... args) throws MultipleFailureException {
+        t().failfNow(fmt, args);
+    }
+
+    static T t() {
+        return T.get();
     }
 }
