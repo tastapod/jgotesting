@@ -1,7 +1,6 @@
 package org.jgotesting;
 
 import org.hamcrest.Matcher;
-import org.junit.runners.model.MultipleFailureException;
 
 @SuppressWarnings("unused")
 public class Testing {
@@ -22,16 +21,16 @@ public class Testing {
         t().failf(fmt, args);
     }
 
-    public static void failWithException(Throwable t) {
-        t().failWithException(t);
-    }
-
-    public static void failNow(Object... args) throws MultipleFailureException {
+    public static void failNow(Object... args) throws Exception {
         t().failNow(args);
     }
 
-    public static void failfNow(String fmt, Object... args) throws MultipleFailureException {
+    public static void failfNow(String fmt, Object... args) throws Exception {
         t().failfNow(fmt, args);
+    }
+
+    static void addFailure(Throwable cause) {
+        t().addFailure(cause);
     }
 
     private static T t() {
@@ -72,19 +71,19 @@ public class Testing {
         T.failUnless(value, matcher);
     }
 
-    public static <V> void failNowIf(String reason, V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowIf(String reason, V value, Matcher<? super V> matcher) throws Exception {
         T.failNowIf(reason, value, matcher);
     }
 
-    public static <V> void failNowIf(V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowIf(V value, Matcher<? super V> matcher) throws Exception {
         T.failNowIf(value, matcher);
     }
 
-    public static <V> void failNowUnless(String reason, V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
         T.failNowUnless(reason, value, matcher);
     }
 
-    public static <V> void failNowUnless(V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowUnless(V value, Matcher<? super V> matcher) throws Exception {
         T.failNowUnless(value, matcher);
     }
 }

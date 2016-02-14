@@ -1,7 +1,6 @@
 package org.jgotesting;
 
 import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
 public class InvokeJGoTestingMethod extends Statement {
@@ -25,9 +24,7 @@ public class InvokeJGoTestingMethod extends Statement {
             }
 
             // if we get here the method completed without throwing an exception
-            if (t.failed()) {
-                throw new MultipleFailureException(t.getErrors());
-            }
+            t.finish();
         } finally {
             T.destroy();
         }

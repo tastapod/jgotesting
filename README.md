@@ -33,7 +33,7 @@
 
 - [ ] `fail()`, `error()` etc. register messages and mark as failed
 - [ ] `log`, `logf` register messages and don't mark as failed
-- [ ] `fatal`, `failNow`, etc. throw an exception
+- [ ] `failNow`, etc. throws an exception
 - [ ] Hamcrest matchers work
 
 

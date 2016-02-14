@@ -1,5 +1,7 @@
 package org.jgotesting;
 
+import org.jgotesting.events.Failure;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -179,7 +181,7 @@ public class Assert {
      * invoked on a dynamic proxy.
      *
      * <p>The method intercepts an {@link AssertionError} and
-     * posts a {@link org.jgotesting.results.Fail JGoTesting error}
+     * posts a {@link Failure JGoTesting error}
      * instead of unrolling the stack. This allows multiple assertions
      * within the same test.</p>
      */
@@ -243,7 +245,7 @@ public class Assert {
             } catch (InvocationTargetException e) {
                 final Throwable cause = e.getCause();
                 if (cause instanceof AssertionError) {
-                    Testing.failWithException(cause);
+                    Testing.addFailure(cause);
                     return null;
                 } else {
                    throw cause;

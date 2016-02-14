@@ -3,8 +3,9 @@ package org.jgotesting;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
-import org.jgotesting.results.Fail;
-import org.jgotesting.results.Message;
+import org.jgotesting.events.Failure;
+import org.jgotesting.events.FatalFailure;
+import org.jgotesting.events.Message;
 import org.junit.runners.model.MultipleFailureException;
 
 import java.util.ArrayList;
@@ -13,14 +14,13 @@ import java.util.List;
 public class T {
     private static final ThreadLocal<T> instance = new ThreadLocal<T>();
 
-    private final List<Throwable> errors = new ArrayList<Throwable>();
+    private final List<Throwable> events = new ArrayList<Throwable>();
     private boolean failed = false;
 
     /**
      * Manage access to the ThreadLocal instance
      */
     protected T() {
-
     }
 
     public static T create() {
@@ -42,14 +42,14 @@ public class T {
     }
 
     /**
-     * formats its arguments using default formatting, analogous to println
+     * log a message which is only displayed if the test fails
      */
     public void log(Object... args) {
-        errors.add(trimStackTrace(new Message(join(args))));
+        events.add(new Message(join(args)));
     }
 
     /**
-     * Logf formats its arguments using default formatting, analogous to Printf
+     * formats its arguments analogous to printf
      */
     public void logf(String format, Object... args) {
         log(String.format(format, args));
@@ -59,7 +59,7 @@ public class T {
      * marks the function as having failed but continues execution
      */
     public void fail(Object... args) {
-        addError(join(args));
+        addFailure(join(args));
     }
 
     /**
@@ -70,26 +70,19 @@ public class T {
     }
 
     /**
-     * stores error from elsewhere verbatim
-     */
-    public void failWithException(Throwable t) {
-        addError(t);
-    }
-
-    /**
      * marks the function as having failed and stops its execution
      */
-    public void failNow(Object... args) throws MultipleFailureException {
-        fail(args);
-        terminate();
+    public void failNow(Object... args) throws Exception {
+        addFatalError(join(args));
+        finish();
     }
 
     /**
      * equivalent to logf followed by failNow
      */
-    public void failfNow(String fmt, Object... args) throws MultipleFailureException {
-        failf(fmt, args);
-        terminate();
+    public void failfNow(String fmt, Object... args) throws Exception {
+        failNow(String.format(fmt, args));
+        finish();
     }
 
     // The Hamcrest matcher methods are static, because generics
@@ -134,23 +127,23 @@ public class T {
         failUnless("", value, matcher);
     }
 
-    public static <V> void failNowIf(String reason, V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowIf(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (matcher.matches(value)) {
             get().failNow(describeMatch(reason, value, matcher));
         }
     }
 
-    public static <V> void failNowIf(V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowIf(V value, Matcher<? super V> matcher) throws Exception {
         failNowIf("", value, matcher);
     }
 
-    public static <V> void failNowUnless(String reason, V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (!matcher.matches(value)) {
             get().failNow(describeMismatch(reason, value, matcher));
         }
     }
 
-    public static <V> void failNowUnless(V value, Matcher<? super V> matcher) throws MultipleFailureException {
+    public static <V> void failNowUnless(V value, Matcher<? super V> matcher) throws Exception {
         failNowUnless("", value, matcher);
     }
 
@@ -173,14 +166,12 @@ public class T {
     }
 
     /**
-     * Failed reports whether the function has failed
+     * throws an exception if anything went wrong during the test
      */
-    boolean failed() {
-        return failed;
-    }
-
-    List<Throwable> getErrors() {
-        return errors;
+    void finish() throws Exception {
+        if (failed) {
+            throw new MultipleFailureException(events);
+        }
     }
 
     // TODO (maybe) skip, skipNow, skipf, skipped (override BlockJUnit4ClassRunner#runChild)
@@ -188,14 +179,14 @@ public class T {
     /**
      * Remove references to ourselves from a stack trace
      *
-     * @param t throwable whose stack trace we mutate
+     * @param cause throwable whose stack trace we mutate
      */
-    private Throwable trimStackTrace(Throwable t) {
+    Throwable trimStackTrace(Throwable cause) {
         final String thisPackage = getClass().getPackage().getName();
         final String junitAssertClassName = org.junit.Assert.class.getName();
         final List<StackTraceElement> result = new ArrayList<StackTraceElement>();
 
-        for (StackTraceElement element : t.getStackTrace()) {
+        for (StackTraceElement element : cause.getStackTrace()) {
             String className = element.getClassName();
             String packageName = className.substring(0, className.lastIndexOf('.'));
 
@@ -203,16 +194,20 @@ public class T {
                 result.add(element);
             }
         }
-        t.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
-        return t;
+        cause.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
+        return cause;
     }
 
-    private void addError(String message) {
-        addError(new Fail(message));
+    private void addFailure(String message) {
+        addFailure(new Failure(message));
     }
 
-    private void addError(Throwable e) {
-        errors.add(trimStackTrace(e));
+    private void addFatalError(String message) {
+        addFailure(new FatalFailure(message));
+    }
+
+    void addFailure(Throwable cause) {
+        events.add(trimStackTrace(cause));
         failed = true;
     }
 
@@ -230,9 +225,5 @@ public class T {
             }
         }
         return result.toString();
-    }
-
-    private void terminate() throws MultipleFailureException {
-        throw new MultipleFailureException(errors);
     }
 }
