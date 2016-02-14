@@ -30,7 +30,7 @@ public class T {
     }
 
     public static void destroy() {
-        instance.set(null);
+        instance.remove();
     }
 
     public static T get() {
