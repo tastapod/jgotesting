@@ -5,8 +5,8 @@ import org.jgotesting.T;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.jgotesting.Testing.*;
 import static org.jgotesting.Assert.*;
+import static org.jgotesting.Testing.*;
 
 @RunWith(JGoTesting.class)
 public class ExampleUsingT {

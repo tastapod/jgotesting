@@ -2,11 +2,9 @@ package org.jgotesting;
 
 import org.jgotesting.results.Fail;
 import org.jgotesting.results.Message;
-import org.junit.Assert;
 import org.junit.runners.model.MultipleFailureException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class T {
@@ -92,15 +90,15 @@ public class T {
      * @param t throwable whose stack trace we mutate
      */
     private Throwable trimStackTrace(Throwable t) {
-        final List<String> filteredClasses = Arrays.asList(
-                T.class.getName(),
-                Testing.class.getName(),
-                Assert.class.getName());
-
+        final String thisPackage = getClass().getPackage().getName();
+        final String junitAssertClassName = org.junit.Assert.class.getName();
         final List<StackTraceElement> result = new ArrayList<StackTraceElement>();
 
         for (StackTraceElement element : t.getStackTrace()) {
-            if (!filteredClasses.contains(element.getClassName())) {
+            String className = element.getClassName();
+            String packageName = className.substring(0, className.lastIndexOf('.'));
+
+            if (!thisPackage.equals(packageName) && !className.equals(junitAssertClassName)) {
                 result.add(element);
             }
         }
