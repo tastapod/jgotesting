@@ -2,6 +2,7 @@ package org.jgotesting.examples;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.jgotesting.JGoTesting;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,7 @@ public class ExampleUsingMatchers {
         failUnless(180, belowMinimumHeight(130));
     }
 
-    private BaseMatcher<Integer> belowMinimumHeight(final int minHeight) {
+    private Matcher<Integer> belowMinimumHeight(final int minHeight) {
         return new BaseMatcher<Integer>() {
             @Override
             public boolean matches(Object item) {
