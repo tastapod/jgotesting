@@ -1,7 +1,9 @@
-group 'jgotesting'
+group 'org.jgotesting'
 version '0.1'
 
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 
@@ -11,4 +13,85 @@ repositories {
 
 dependencies {
     compile group: 'junit', name: 'junit', version: '4.+'
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+def isSetupForDeployToMavenCentral() {
+    def requiredProperties = ['ossrhUsername',
+                              'ossrhPassword',
+                              'signing.keyId',
+                              'signing.password',
+                              'signing.secretKeyRingFile']
+    for(prop in requiredProperties) {
+        if(!project.hasProperty(prop)) {
+            return false
+        }
+    }
+    return true
+}
+if(isSetupForDeployToMavenCentral()) {
+    signing {
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'jgotesting'
+                    packaging 'jar'
+                    description 'JUnit-compatible testing tool inspired by Go\'s testing package'
+                    url 'https://gitlab.com/tastapod/jgotesting'
+                    inceptionYear '2016'
+
+                    scm {
+                        connection 'scm:git:git@gitlab.com:tastapod/jgotesting.git'
+                        developerConnection 'scm:git:git@gitlab.com:tastapod/jgotesting.git'
+                        url 'https://gitlab.com/tastapod/jgotesting'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The BSD 3-Clause License'
+                            url 'https://opensource.org/licenses/BSD-3-Clause'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'dn'
+                            name 'Dan North'
+                            email '...'
+                            url 'http://dannorth.net/'
+                            timezone 'GMT'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
