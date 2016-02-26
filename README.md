@@ -44,9 +44,10 @@
 
 ## How to realse to Maven Central
 
-Run `gradle uploadArchives` to deploy to Sonatypes OSS repository. The upload goes to the snapshot repository
-if the version ends with "-VERSION" and otherwise to the Maven Central staging repository. Log in to Nexus OSS to
-verify the deploy and promote the version to Maven Central.
+Run `gradle uploadArchives` to deploy to Sonatypes OSS repository. The upload goes to the
+snapshot repository if the version ends with "-VERSION" and otherwise to the Maven Central
+staging repository. Log in to Nexus OSS to verify the deploy and promote the version to
+Maven Central.
 
 ### Required configuration
 

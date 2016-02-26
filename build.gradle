@@ -26,7 +26,9 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+    archives jar
+    archives javadocJar
+    archives sourcesJar
 }
 
 def isSetupForDeployToMavenCentral() {
@@ -42,6 +44,7 @@ def isSetupForDeployToMavenCentral() {
     }
     return true
 }
+
 if(isSetupForDeployToMavenCentral()) {
     signing {
         sign configurations.archives
@@ -85,9 +88,9 @@ if(isSetupForDeployToMavenCentral()) {
                         developer {
                             id 'dn'
                             name 'Dan North'
-                            email '...'
+                            email 'dan@dannorth.net'
                             url 'http://dannorth.net/'
-                            timezone 'GMT'
+                            timezone 'Europe/London'
                         }
                     }
                 }
