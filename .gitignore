@@ -1,4 +1,8 @@
-*.i??
+*.ipr
+*.iml
+*.iws
+.idea/
 .gradle/
-gradle/
 build/
+gradle/
+target/
