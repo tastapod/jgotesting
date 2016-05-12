@@ -11,29 +11,29 @@ import org.junit.runners.model.MultipleFailureException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class T {
-    private static final ThreadLocal<T> instance = new ThreadLocal<T>();
+public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing {
+    private static final ThreadLocal<T> instance = new ThreadLocal<>();
 
-    private final List<Throwable> events = new ArrayList<Throwable>();
+    private final List<Throwable> events = new ArrayList<>();
     private boolean failed = false;
 
     /**
      * Manage access to the ThreadLocal instance
      */
-    protected T() {
+    private T() {
     }
 
-    public static T create() {
+    static T create() {
         T t = new T();
         instance.set(t);
         return t;
     }
 
-    public static void destroy() {
+    static void destroy() {
         instance.remove();
     }
 
-    public static T get() {
+    static T get() {
         final T t = instance.get();
         if (t == null) {
             throw new RuntimeException("Annotate your test class with @RunWith(JGoTesting.class)");
@@ -41,113 +41,111 @@ public class T {
         return t;
     }
 
-    /**
-     * log a message which is only displayed if the test fails
-     */
+    @Override
     public void log(Object... args) {
         events.add(trimStackTrace(new Message(join(args))));
     }
 
-    /**
-     * formats its arguments analogous to printf
-     */
+    @Override
     public void logf(String format, Object... args) {
         log(String.format(format, args));
     }
 
-    /**
-     * marks the function as having failed but continues execution
-     */
+    @Override
     public void fail(Object... args) {
         addFailure(join(args));
     }
 
-    /**
-     * equivalent to logf followed by fail
-     */
+    @Override
     public void failf(String fmt, Object... args) {
         fail(String.format(fmt, args));
     }
 
-    /**
-     * marks the function as having failed and stops its execution
-     */
-    public void failNow(Object... args) throws Exception {
+    @Override
+    public void terminate(Object... args) throws Exception {
         addFatalError(join(args));
         finish();
     }
 
-    /**
-     * equivalent to logf followed by failNow
-     */
-    public void failfNow(String fmt, Object... args) throws Exception {
-        failNow(String.format(fmt, args));
+    @Override
+    public void terminatef(String fmt, Object... args) throws Exception {
+        terminate(String.format(fmt, args));
         finish();
     }
 
-    // The Hamcrest matcher methods are static, because generics
-
-    public static <V> void logIf(String reason, V value, Matcher<? super V> matcher) {
+    @Override
+    public <V> void logWhen(String reason, V value, Matcher<? super V> matcher) {
         if (matcher.matches(value)) {
             get().log(describeMatch(reason, value, matcher));
         }
     }
 
-    public static <V> void logIf(V value, Matcher<? super V> matcher) {
-        logIf("", value, matcher);
+    @Override
+    public <V> void logWhen(V value, Matcher<? super V> matcher) {
+        logWhen("", value, matcher);
     }
 
-    public static <V> void logUnless(String reason, V value, Matcher<? super V> matcher) {
+    @Override
+    public <V> void logUnless(String reason, V value, Matcher<? super V> matcher) {
         if (!matcher.matches(value)) {
             get().log(describeMismatch(reason, value, matcher));
         }
     }
 
-    public static <V> void logUnless(V value, Matcher<? super V> matcher) {
+    @Override
+    public <V> void logUnless(V value, Matcher<? super V> matcher) {
         logUnless("", value, matcher);
     }
 
-    public static <V> void failIf(String reason, V value, Matcher<? super V> matcher) {
+    @Override
+    public <V> void failWhen(String reason, V value, Matcher<? super V> matcher) {
         if (matcher.matches(value)) {
             get().fail(describeMatch(reason, value, matcher));
         }
     }
 
-    public static <V> void failIf(V value, Matcher<? super V> matcher) {
-        failIf("", value, matcher);
+    @Override
+    public <V> void failWhen(V value, Matcher<? super V> matcher) {
+        failWhen("", value, matcher);
     }
 
-    public static <V> void failUnless(String reason, V value, Matcher<? super V> matcher) {
+    @Override
+    public <V> void failUnless(String reason, V value, Matcher<? super V> matcher) {
         if (!matcher.matches(value)) {
             get().fail(describeMismatch(reason, value, matcher));
         }
     }
 
-    public static <V> void failUnless(V value, Matcher<? super V> matcher) {
+    @Override
+    public <V> void failUnless(V value, Matcher<? super V> matcher) {
         failUnless("", value, matcher);
     }
 
-    public static <V> void failNowIf(String reason, V value, Matcher<? super V> matcher) throws Exception {
+    @Override
+    public <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (matcher.matches(value)) {
-            get().failNow(describeMatch(reason, value, matcher));
+            get().terminate(describeMatch(reason, value, matcher));
         }
     }
 
-    public static <V> void failNowIf(V value, Matcher<? super V> matcher) throws Exception {
-        failNowIf("", value, matcher);
+    @Override
+    public <V> void terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
+        terminateWhen("", value, matcher);
     }
 
-    public static <V> void failNowUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
+    @Override
+    public <V> void terminateUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (!matcher.matches(value)) {
-            get().failNow(describeMismatch(reason, value, matcher));
+            get().terminate(describeMismatch(reason, value, matcher));
         }
     }
 
-    public static <V> void failNowUnless(V value, Matcher<? super V> matcher) throws Exception {
-        failNowUnless("", value, matcher);
+    @Override
+    public <V> void terminateUnless(V value, Matcher<? super V> matcher) throws Exception {
+        terminateUnless("", value, matcher);
     }
 
-    static <V> Description describeMatch(String reason, V value, Matcher<? super V> matcher) {
+    private static <V> Description describeMatch(String reason, V value, Matcher<? super V> matcher) {
         return new StringDescription()
                 .appendText(reason)
                 .appendText("\nDidn't want: ")
@@ -156,7 +154,7 @@ public class T {
                 .appendValue(value);
     }
 
-    static <V> Description describeMismatch(String reason, V value, Matcher<? super V> matcher) {
+    private static <V> Description describeMismatch(String reason, V value, Matcher<? super V> matcher) {
         return new StringDescription()
                 .appendText(reason)
                 .appendText("\nWanted:  ")
@@ -174,17 +172,17 @@ public class T {
         }
     }
 
-    // TODO (maybe) skip, skipNow, skipf, skipped (override BlockJUnit4ClassRunner#runChild)
+    // TODO (maybe) skip, skipf, skipped (override BlockJUnit4ClassRunner#runChild)
 
     /**
      * Remove references to ourselves from a stack trace
      *
      * @param cause throwable whose stack trace we mutate
      */
-    Throwable trimStackTrace(Throwable cause) {
+    private Throwable trimStackTrace(Throwable cause) {
         final String thisPackage = getClass().getPackage().getName();
         final String junitAssertClassName = org.junit.Assert.class.getName();
-        final List<StackTraceElement> result = new ArrayList<StackTraceElement>();
+        final List<StackTraceElement> result = new ArrayList<>();
 
         for (StackTraceElement element : cause.getStackTrace()) {
             String className = element.getClassName();

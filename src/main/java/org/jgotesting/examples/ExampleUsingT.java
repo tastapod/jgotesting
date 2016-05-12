@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.jgotesting.Assert.*;
+import static org.jgotesting.Check.*;
 import static org.jgotesting.Testing.*;
 
 @RunWith(JGoTesting.class)
@@ -34,7 +35,7 @@ public class ExampleUsingT {
     @Test
     public void thisTerminatesPartWayThrough(T t) throws Exception {
         t.fail("Something bad happened");
-        t.failNow();
+        t.terminate();
         t.fail("This never gets reported");
     }
 
@@ -42,7 +43,7 @@ public class ExampleUsingT {
     public void thisUsesStaticMethods() throws Exception {
         log("Just shooting the breeze");
         fail("Something went wrong");
-        failNow();
+        terminate();
     }
 
     @Test
@@ -66,5 +67,16 @@ public class ExampleUsingT {
         assertEquals(1, 2);
 
         assertEquals(3, 2);
+    }
+
+    @Test
+    public void thisUsesChecks() throws Exception {
+        checkTrue("oops", false);
+
+        checkNotNull(null);
+
+        checkEquals(1, 2);
+
+        checkEquals(3, 2);
     }
 }

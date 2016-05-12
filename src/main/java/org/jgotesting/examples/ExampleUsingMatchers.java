@@ -15,21 +15,21 @@ public class ExampleUsingMatchers {
     @Test
     public void logsMatchAndFails() throws Exception {
         // logging
-        logIf("This isn't null", notNullValue());
+        logWhen("This isn't null", notNullValue());
         logUnless("Unexpected result", startsWith("Expected"));
 
         // failing
-        failIf("Contains bad words", containsString("bad"));
+        failWhen("Contains bad words", containsString("bad"));
         failUnless("Not null", nullValue());
 
-        failNowIf("Terminates here", notNullValue());
+        terminateWhen("Terminates here", notNullValue());
 
         fail("We never get here");
     }
 
     @Test
     public void hasCustomMatcher() throws Exception {
-        failIf(100, belowMinimumHeight(130));
+        failWhen(100, belowMinimumHeight(130));
         failUnless(180, belowMinimumHeight(130));
     }
 

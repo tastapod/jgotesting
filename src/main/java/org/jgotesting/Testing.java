@@ -21,15 +21,15 @@ public class Testing {
         t().failf(fmt, args);
     }
 
-    public static void failNow(Object... args) throws Exception {
-        t().failNow(args);
+    public static void terminate(Object... args) throws Exception {
+        t().terminate(args);
     }
 
     public static void failfNow(String fmt, Object... args) throws Exception {
-        t().failfNow(fmt, args);
+        t().terminatef(fmt, args);
     }
 
-    static void addFailure(Throwable cause) {
+    public static void _addFailure(Throwable cause) {
         t().addFailure(cause);
     }
 
@@ -39,51 +39,51 @@ public class Testing {
 
     // Hamcrest matcher methods
 
-    public static <V> void logIf(String reason, V value, Matcher<? super V> matcher) {
-        T.logIf(reason, value, matcher);
+    public static <V> void logWhen(String reason, V value, Matcher<? super V> matcher) {
+        t().logWhen(reason, value, matcher);
     }
 
-    public static <V> void logIf(V value, Matcher<? super V> matcher) {
-        T.logIf(value, matcher);
+    public static <V> void logWhen(V value, Matcher<? super V> matcher) {
+        t().logWhen(value, matcher);
     }
 
     public static <V> void logUnless(String reason, V value, Matcher<? super V> matcher) {
-        T.logUnless(reason, value, matcher);
+        t().logUnless(reason, value, matcher);
     }
 
     public static <V> void logUnless(V value, Matcher<? super V> matcher) {
-        T.logUnless(value, matcher);
+        t().logUnless(value, matcher);
     }
 
-    public static <V> void failIf(String reason, V value, Matcher<? super V> matcher) {
-        T.failIf(reason, value, matcher);
+    public static <V> void failWhen(String reason, V value, Matcher<? super V> matcher) {
+        t().failWhen(reason, value, matcher);
     }
 
-    public static <V> void failIf(V value, Matcher<? super V> matcher) {
-        T.failIf(value, matcher);
+    public static <V> void failWhen(V value, Matcher<? super V> matcher) {
+        t().failWhen(value, matcher);
     }
 
     public static <V> void failUnless(String reason, V value, Matcher<? super V> matcher) {
-        T.failUnless(reason, value, matcher);
+        t().failUnless(reason, value, matcher);
     }
 
     public static <V> void failUnless(V value, Matcher<? super V> matcher) {
-        T.failUnless(value, matcher);
+        t().failUnless(value, matcher);
     }
 
-    public static <V> void failNowIf(String reason, V value, Matcher<? super V> matcher) throws Exception {
-        T.failNowIf(reason, value, matcher);
+    public static <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
+        t().terminateWhen(reason, value, matcher);
     }
 
-    public static <V> void failNowIf(V value, Matcher<? super V> matcher) throws Exception {
-        T.failNowIf(value, matcher);
+    public static <V> void terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
+        t().terminateWhen(value, matcher);
     }
 
-    public static <V> void failNowUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
-        T.failNowUnless(reason, value, matcher);
+    public static <V> void terminateUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
+        t().terminateUnless(reason, value, matcher);
     }
 
-    public static <V> void failNowUnless(V value, Matcher<? super V> matcher) throws Exception {
-        T.failNowUnless(value, matcher);
+    public static <V> void terminateUnless(V value, Matcher<? super V> matcher) throws Exception {
+        t().terminateUnless(value, matcher);
     }
 }

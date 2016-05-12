@@ -17,11 +17,13 @@
 - [x] implement T.fail()
 - [x] implement other T methods (log, error, etc.)
 - [x] report failures at end
-- [x] implement T.failNow()
+- [x] implement T.terminate()
 - [x] show multiple errors as test failures
 - [x] implement assert, assertEquals, etc. probably in Assert
 - [x] have static import versions
-- [x] have T.failIf(matcher), T.failUnless(matcher), so t.failNowIf(foo, nullValue());
+- [x] have T.failWhen(matcher), T.failUnless(matcher), etc., so t.terminateWhen(foo, nullValue());
+- [ ] make it work with JMock
+- [ ] make it work with Mockito
 
 ## Behaviour that needs tests
 
@@ -33,7 +35,7 @@
 
 - [ ] `fail()`, `error()` etc. register messages and mark as failed
 - [ ] `log`, `logf` register messages and don't mark as failed
-- [ ] `failNow`, etc. throws an exception
+- [ ] `fail`, `terminate`, etc. throws an exception
 - [ ] Hamcrest matchers work
 
 

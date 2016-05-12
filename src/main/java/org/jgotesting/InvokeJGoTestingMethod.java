@@ -3,11 +3,11 @@ package org.jgotesting;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-public class InvokeJGoTestingMethod extends Statement {
+class InvokeJGoTestingMethod extends Statement {
     private final FrameworkMethod method;
     private final Object target;
 
-    public InvokeJGoTestingMethod(FrameworkMethod method, Object target) {
+    InvokeJGoTestingMethod(FrameworkMethod method, Object target) {
         this.method = method;
         this.target = target;
     }
