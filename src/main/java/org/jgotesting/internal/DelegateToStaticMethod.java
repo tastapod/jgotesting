@@ -81,7 +81,7 @@ public class DelegateToStaticMethod implements InvocationHandler {
     }
 
     /**
-     * enables custom method signatures for mapping e.g. checkXxx -> assertXxx
+     * override this to map e.g. <code>checkBlah</code> to <code>assertBlah</code>
      */
     protected MethodSignature buildMethodSignature(Method method) {
         return new MethodSignature(method);
