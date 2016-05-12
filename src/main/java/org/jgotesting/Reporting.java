@@ -1,6 +1,9 @@
 package org.jgotesting;
 
-interface Reporting {
+/**
+ * Documenting interface for logging messages
+ */
+interface Reporting { // "Logging" is already a loaded interface name in Java
     /**
      * log a message which is only displayed if the test fails
      */

@@ -1,5 +1,8 @@
 package org.jgotesting;
 
+/**
+ * Documenting interface for failures
+ */
 interface Failing {
     /**
      * marks the function as having failed but continues execution

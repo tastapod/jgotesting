@@ -37,15 +37,15 @@ def isSetupForDeployToMavenCentral() {
                               'signing.keyId',
                               'signing.password',
                               'signing.secretKeyRingFile']
-    for(prop in requiredProperties) {
-        if(!project.hasProperty(prop)) {
+    for (prop in requiredProperties) {
+        if (!project.hasProperty(prop)) {
             return false
         }
     }
     return true
 }
 
-if(isSetupForDeployToMavenCentral()) {
+if (isSetupForDeployToMavenCentral()) {
     signing {
         sign configurations.archives
     }
