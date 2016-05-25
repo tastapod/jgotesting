@@ -29,7 +29,7 @@
 
 ### JGoTesting
 
-- [ ] checks the `@Test` method is public, non-static, void and takes a single T parameter
+- [x] checks the `@Test` method is public, non-static, void and takes a single T parameter
 
 ### T
 
@@ -48,8 +48,8 @@
 
 Run `gradle uploadArchives` to deploy to Sonatypes OSS repository. The upload goes to the
 snapshot repository if the version ends with "-VERSION" and otherwise to the Maven Central
-staging repository. Log in to Nexus OSS to verify the deploy and promote the version to
-Maven Central.
+staging repository. Log in to Nexus OSS to verify the staged artifacts and release them
+using [these instructions](http://central.sonatype.org/pages/releasing-the-deployment.html).
 
 ### Required configuration
 
