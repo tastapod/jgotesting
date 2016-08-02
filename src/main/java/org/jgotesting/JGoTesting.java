@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * {@link org.junit.runner.Runner} that allows a test to continue
  * after a failure, so a single test can contain multiple checks.
- *
+ * <p>
  * See {@link org.jgotesting.examples.ExampleUsingT ExampleUsingT}
  * for some examples.
  */
@@ -23,7 +23,7 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
 
     /**
      * Check each <code>@Test</code> method matches:
-     *
+     * <p>
      * <code>public void blah(T t) { ... }</code>
      *
      * @param errors collecting parameter for validation errors
@@ -61,8 +61,6 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
     private void addError(FrameworkMethod method, String message, List<Throwable> errors) {
         errors.add(new RuntimeException("Method " + method.getName() + " " + message));
     }
-
-
 
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {

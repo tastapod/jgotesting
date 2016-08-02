@@ -1,11 +1,16 @@
 package org.jgotesting;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.internal.builders.IgnoredClassRunner;
+import org.junit.runner.RunWith;
 import org.junit.runners.model.InitializationError;
 
 @SuppressWarnings("WeakerAccess")
 public class JGoTestingTest {
 
+    @Ignore("because gradle")
+    @RunWith(IgnoredClassRunner.class)
     public static class HasPrivateTestMethod {
         @Test
         private void shouldBePublicMethod() {
@@ -18,6 +23,8 @@ public class JGoTestingTest {
     }
 
 
+    @Ignore("because gradle")
+    @RunWith(IgnoredClassRunner.class)
     public static class HasStaticTestMethod {
         @Test
         public static void shouldBeInstanceMethod() {
@@ -30,6 +37,8 @@ public class JGoTestingTest {
     }
 
 
+    @Ignore("because gradle")
+    @RunWith(IgnoredClassRunner.class)
     public static class HasTestMethodWithoutParameters {
         @Test
         public void hasNoParameters() {
@@ -42,6 +51,8 @@ public class JGoTestingTest {
     }
 
 
+    @Ignore("because gradle")
+    @RunWith(IgnoredClassRunner.class)
     public static class HasTestMethodWithSingleTParameter {
         @Test
         public void hasSingleTParameter(T t) {
@@ -54,6 +65,8 @@ public class JGoTestingTest {
     }
 
 
+    @Ignore("because gradle")
+    @RunWith(IgnoredClassRunner.class)
     public static class HasTestMethodWithWrongParameterType {
         @Test
         public void hasWrongParameterType(String notT) {
@@ -66,6 +79,8 @@ public class JGoTestingTest {
     }
 
 
+    @Ignore("because gradle")
+    @RunWith(IgnoredClassRunner.class)
     public static class HasNonTestMethod {
         @Test
         public void thisIsFine() {
@@ -79,5 +94,4 @@ public class JGoTestingTest {
     public void ignoresNonTestMethod() throws Exception {
         new JGoTesting(HasNonTestMethod.class);
     }
-
 }

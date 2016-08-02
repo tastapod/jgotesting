@@ -3,8 +3,6 @@ package org.jgotesting;
 import org.junit.Test;
 import org.junit.runners.model.MultipleFailureException;
 
-import static org.junit.Assert.*;
-
 public class TTest {
 
     private final T t = T.create();
