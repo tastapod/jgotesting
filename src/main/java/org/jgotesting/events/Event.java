@@ -1,6 +1,7 @@
 package org.jgotesting.events;
 
 public class Event extends RuntimeException {
+
     public Event(Throwable cause) {
         super(cause);
     }

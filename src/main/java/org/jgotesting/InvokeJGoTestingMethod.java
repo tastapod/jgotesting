@@ -15,7 +15,7 @@ class InvokeJGoTestingMethod extends Statement {
     @Override
     public void evaluate() throws Throwable {
         try {
-            final T t = T.create();
+            final T t = new T();
 
             if (methodTakesParameter()) {
                 method.invokeExplosively(target, t);

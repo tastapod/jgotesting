@@ -20,13 +20,8 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     /**
      * Manage access to the ThreadLocal instance
      */
-    private T() {
-    }
-
-    static T create() {
-        T t = new T();
-        instance.set(t);
-        return t;
+    protected T() {
+        instance.set(this);
     }
 
     static void destroy() {
@@ -100,7 +95,7 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     @Override
     public <V> void failWhen(String reason, V value, Matcher<? super V> matcher) {
         if (matcher.matches(value)) {
-            get().fail(describeMatch(reason, value, matcher));
+            fail(describeMatch(reason, value, matcher));
         }
     }
 
@@ -112,7 +107,7 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     @Override
     public <V> void failUnless(String reason, V value, Matcher<? super V> matcher) {
         if (!matcher.matches(value)) {
-            get().fail(describeMismatch(reason, value, matcher));
+            fail(describeMismatch(reason, value, matcher));
         }
     }
 
@@ -124,7 +119,7 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     @Override
     public <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (matcher.matches(value)) {
-            get().terminate(describeMatch(reason, value, matcher));
+            terminate(describeMatch(reason, value, matcher));
         }
     }
 
@@ -136,7 +131,7 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     @Override
     public <V> void terminateUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (!matcher.matches(value)) {
-            get().terminate(describeMismatch(reason, value, matcher));
+            terminate(describeMismatch(reason, value, matcher));
         }
     }
 
@@ -166,9 +161,13 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     /**
      * throws an exception if anything went wrong during the test
      */
-    void finish() throws Exception {
-        if (failed) {
-            throw new MultipleFailureException(events);
+    protected void finish() throws Exception {
+        try {
+            if (failed) {
+                throw new MultipleFailureException(events);
+            }
+        } finally {
+            destroy();
         }
     }
 
@@ -204,7 +203,7 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
         addFailure(new FatalFailure(message));
     }
 
-    void addFailure(Throwable cause) {
+    protected void addFailure(Throwable cause) {
         events.add(trimStackTrace(cause));
         failed = true;
     }

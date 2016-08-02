@@ -45,7 +45,7 @@ public class JGoTesting extends BlockJUnit4ClassRunner {
     private void validateMethodSignature(FrameworkMethod method, List<Throwable> errors) {
         final List<Class<?>> singleParameterT = Arrays.asList(new Class<?>[]{T.class});
         final List<Class<?>> noParameters = Arrays.asList(new Class<?>[]{});
-        final List<Class<?>> params = Arrays.asList(method.getMethod().getParameterTypes());
+        final List<Class<?>> params = Arrays.<Class<?>>asList(method.getMethod().getParameterTypes());
 
         if (method.isStatic()) addError(method, "should not be static", errors);
 
