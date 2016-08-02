@@ -6,9 +6,9 @@ import org.junit.runner.JUnitCore;
 public class Main {
     public static void main(String[] args) throws Exception {
         Class[] examples = {
-                ExampleUsingT.class,
+                ExampleUsingRule.class,
                 ExampleUsingMatchers.class,
-                ExampleWithoutAnnotation.class
+                ExampleWithoutRule.class
         };
         final JUnitCore junit = new JUnitCore();
         junit.addListener(new TextListener(System.out));

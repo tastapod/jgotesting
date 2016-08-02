@@ -31,7 +31,7 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     static T get() {
         final T t = instance.get();
         if (t == null) {
-            throw new RuntimeException("Annotate your test class with @RunWith(JGoTesting.class)");
+            throw new RuntimeException("Add this to your test class:\n\n@Rule\npublic TRule t = new TRule();\n\n");
         }
         return t;
     }

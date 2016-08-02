@@ -3,15 +3,17 @@ package org.jgotesting.examples;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.jgotesting.JGoTesting;
+import org.jgotesting.rule.TRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.jgotesting.Testing.*;
 
-@RunWith(JGoTesting.class)
 public class ExampleUsingMatchers {
+    @Rule
+    public TRule t = new TRule();
+
     @Test
     public void logsMatchAndFails() throws Exception {
         // logging

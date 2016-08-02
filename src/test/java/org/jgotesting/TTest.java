@@ -5,7 +5,7 @@ import org.junit.runners.model.MultipleFailureException;
 
 public class TTest {
 
-    private final T t = T.create();
+    private final T t = new T();
 
     @Test
     public void testFinishesCleanlyIfNothingHappened() throws Exception {

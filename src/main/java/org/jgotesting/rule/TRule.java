@@ -5,6 +5,9 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+/**
+ * @pronounced "Troll"
+ */
 public class TRule extends T implements TestRule {
 
     @Override

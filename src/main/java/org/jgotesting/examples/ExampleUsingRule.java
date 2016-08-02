@@ -1,13 +1,12 @@
 package org.jgotesting.examples;
 
-import org.jgotesting.T;
 import org.jgotesting.rule.TRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.jgotesting.Assert.assertEquals;
-import static org.jgotesting.Assert.assertNotNull;
-import static org.jgotesting.Assert.assertTrue;
+import static org.jgotesting.Assert.*;
+import static org.jgotesting.Check.*;
+import static org.jgotesting.Testing.*;
 
 public class ExampleUsingRule {
     @Rule
@@ -26,6 +25,19 @@ public class ExampleUsingRule {
     public void failsTwiceUsingRule() throws Exception {
         t.fail("once");
         t.fail("twice");
+    }
+
+    @Test
+    public void failsUsingStaticMethods() throws Exception {
+        log("Just shooting the breeze");
+        fail("Something went wrong");
+        terminate();
+    }
+
+    @Test
+    public void thisUsesMixOfStaticAndParameterMethods() throws Exception {
+        log("First message is just logging");
+        t.fail("Second message is an error");
     }
 
     @Test
@@ -52,6 +64,16 @@ public class ExampleUsingRule {
         assertEquals(1, 2);
 
         assertEquals(3, 2);
+    }
 
+    @Test
+    public void handlesMultipleStaticChecks() throws Exception {
+        checkTrue("oops", false);
+
+        checkNotNull(null);
+
+        checkEquals(1, 2);
+
+        checkEquals(3, 2);
     }
 }
