@@ -3,10 +3,8 @@ import java.text.SimpleDateFormat
 plugins {
     id 'java'
     id 'idea'
-    id 'maven'
-    id 'signing'
-    //id 'maven-publish'
-    //id 'com.jfrog.bintray' version '1.7'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.7.1'
     id 'net.nemerosa.versioning' version '2.3.0'
 }
 
@@ -40,70 +38,32 @@ artifacts {
     archives sourcesJar
 }
 
-def isSetupForDeployToMavenCentral() {
-    def requiredProperties = ['ossrhUsername',
-                              'ossrhPassword',
-                              'signing.keyId',
-                              'signing.password',
-                              'signing.secretKeyRingFile']
-    for (prop in requiredProperties) {
-        if (!project.hasProperty(prop)) {
-            return false
+def pomConfig = {
+    name project.name
+    description project.pomDescription
+    url project.repositoryUrl
+    inceptionYear pomInceptionYear
+
+    scm {
+        connection 'scm:git:git@gitlab.com:tastapod/jgotesting.git'
+        developerConnection 'scm:git:git@gitlab.com:tastapod/jgotesting.git'
+        url 'https://gitlab.com/tastapod/jgotesting'
+    }
+
+    licenses {
+        license {
+            name pomLicenseName
+            url pomLicenseUrl
         }
     }
-    return true
-}
 
-if (isSetupForDeployToMavenCentral()) {
-    signing {
-        sign configurations.archives
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                pom.project {
-                    name 'jgotesting'
-                    packaging 'jar'
-                    description 'JUnit-compatible testing tool inspired by Go\'s testing package'
-                    url 'https://gitlab.com/tastapod/jgotesting'
-                    inceptionYear '2016'
-
-                    scm {
-                        connection 'scm:git:git@gitlab.com:tastapod/jgotesting.git'
-                        developerConnection 'scm:git:git@gitlab.com:tastapod/jgotesting.git'
-                        url 'https://gitlab.com/tastapod/jgotesting'
-                    }
-
-                    licenses {
-                        license {
-                            name 'The BSD 3-Clause License'
-                            url 'https://opensource.org/licenses/BSD-3-Clause'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'dn'
-                            name 'Dan North'
-                            email 'dan@dannorth.net'
-                            url 'http://dannorth.net/'
-                            timezone 'Europe/London'
-                        }
-                    }
-                }
-            }
+    developers {
+        developer {
+            id 'dn'
+            name 'Dan North'
+            email 'dan@dannorth.net'
+            url 'http://dannorth.net/'
+            timezone 'Europe/London'
         }
     }
 }
@@ -130,9 +90,31 @@ jar {
     }
 }
 
-/*
 if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = ''
 if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = ''
+
+publishing {
+    publications {
+        mavenCustom(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            // Copied wholesale from https://github.com/griffon/griffon/blob/development/gradle/publish.gradle
+            pom.withXml {
+                // all dependencies should use the default scope (compile) but
+                // Gradle insists in using runtime as default
+                asNode().dependencies.dependency.each { dep ->
+                    if (dep.scope.text() == 'runtime') {
+                        dep.remove(dep.scope)
+                    }
+                }
+                asNode().children().last() + pomConfig
+                asNode().appendNode('description', project.pomDescription)
+            }
+        }
+    }
+}
 
 bintray {
     user = project.bintrayUsername
@@ -140,15 +122,14 @@ bintray {
     publications = ['mavenCustom']
     pkg {
         repo = 'maven'
-        userOrg = 'tastapod'
+        userOrg = 'jgotesting'
         name = project.name
         desc = project.pomDescription
-        licenses = ['BSD-3']
+        licenses = ['BSD 3-Clause']
         labels = ['testing', 'junit']
-        websiteUrl = 'https://gitlab.com/tastapod/jgotesting'
-        issueTrackerUrl = 'https://gitlab.com/tastapod/jgotesting/issues'
-        vcsUrl = 'https://gitlab.com/tastapod/jgotesting.git'
+        websiteUrl = project.repositoryUrl
+        issueTrackerUrl = project.issueTrackerUrl
+        vcsUrl = project.vcsUrl
         publicDownloadNumbers = true
     }
 }
-*/
