@@ -121,8 +121,8 @@ bintray {
     key = project.bintrayApiKey
     publications = ['mavenCustom']
     pkg {
-        repo = 'maven'
         userOrg = 'jgotesting'
+        repo = 'jgotesting'
         name = project.name
         desc = project.pomDescription
         licenses = ['BSD 3-Clause']
