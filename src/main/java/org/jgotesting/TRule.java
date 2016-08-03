@@ -1,4 +1,4 @@
-package org.jgotesting.rule;
+package org.jgotesting;
 
 import org.jgotesting.T;
 import org.junit.rules.TestRule;
@@ -6,7 +6,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * @pronounced "Troll"
+ * Note: pronounced "Troll"
  */
 public class TRule extends T implements TestRule {
 

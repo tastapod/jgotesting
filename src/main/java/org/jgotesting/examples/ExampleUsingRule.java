@@ -1,6 +1,6 @@
 package org.jgotesting.examples;
 
-import org.jgotesting.rule.TRule;
+import org.jgotesting.TRule;
 import org.junit.Rule;
 import org.junit.Test;
 

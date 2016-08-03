@@ -24,10 +24,6 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
         instance.set(this);
     }
 
-    static void destroy() {
-        instance.remove();
-    }
-
     static T get() {
         final T t = instance.get();
         if (t == null) {
@@ -167,7 +163,7 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
                 throw new MultipleFailureException(events);
             }
         } finally {
-            destroy();
+            instance.remove();
         }
     }
 

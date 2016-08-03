@@ -3,7 +3,7 @@ package org.jgotesting.examples;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.jgotesting.rule.TRule;
+import org.jgotesting.TRule;
 import org.junit.Rule;
 import org.junit.Test;
 
