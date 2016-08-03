@@ -1,19 +1,27 @@
-group 'org.jgotesting'
-version '0.4'
+import java.text.SimpleDateFormat
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'idea'
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven'
+    id 'signing'
+    //id 'maven-publish'
+    //id 'com.jfrog.bintray' version '1.7'
+    id 'net.nemerosa.versioning' version '2.3.0'
+}
 
-sourceCompatibility = 1.7
+Date buildTimeAndDate = new Date()
+ext {
+    buildDate = new SimpleDateFormat('yyyy-MM-dd').format(buildTimeAndDate)
+    buildTime = new SimpleDateFormat('HH:mm:ss.SSSZ').format(buildTimeAndDate)
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile group: 'junit', name: 'junit', version: '[4.0,5.0)'
+    compile 'junit:junit:4.11'
 }
 
 task javadocJar(type: Jar) {
@@ -99,3 +107,48 @@ if (isSetupForDeployToMavenCentral()) {
         }
     }
 }
+
+jar {
+    manifest {
+        attributes(
+                'Created-By': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})".toString(),
+                'Build-Date': buildDate,
+                'Build-Time': buildTime,
+                'Build-Revision': versioning.info.commit,
+                'Specification-Title': project.name,
+                'Specification-Version': project.version,
+                'Specification-Vendor': 'jgotesting.org',
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'jgotesting.org'
+        )
+    }
+
+    metaInf {
+        from rootProject.file('.')
+        include 'LICENSE.*'
+    }
+}
+
+/*
+if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = ''
+if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = ''
+
+bintray {
+    user = project.bintrayUsername
+    key = project.bintrayApiKey
+    publications = ['mavenCustom']
+    pkg {
+        repo = 'maven'
+        userOrg = 'tastapod'
+        name = project.name
+        desc = project.pomDescription
+        licenses = ['BSD-3']
+        labels = ['testing', 'junit']
+        websiteUrl = 'https://gitlab.com/tastapod/jgotesting'
+        issueTrackerUrl = 'https://gitlab.com/tastapod/jgotesting/issues'
+        vcsUrl = 'https://gitlab.com/tastapod/jgotesting.git'
+        publicDownloadNumbers = true
+    }
+}
+*/
