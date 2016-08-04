@@ -3,7 +3,7 @@ package org.jgotesting.examples;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.jgotesting.TRule;
+import org.jgotesting.JGoTest;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -12,19 +12,38 @@ import static org.jgotesting.Testing.*;
 
 public class ExampleUsingMatchers {
     @Rule
-    public TRule t = new TRule();
+    public JGoTest test = new JGoTest();
 
     @Test
     public void logsMatchAndFails() throws Exception {
         // logging
-        logWhen("This isn't null", notNullValue());
-        logUnless("Unexpected result", startsWith("Expected"));
+        String value = "Some value";
+        logWhen(value, notNullValue());
+
+        String result = "Unexpected: the Spanish Inquisition!";
+        logUnless(result, startsWith("Expected"));
 
         // failing
-        failWhen("Contains bad words", containsString("bad"));
-        failUnless("Not null", nullValue());
+        failUnless(value, nullValue());
+        failWhen(result, containsString("Spanish"));
 
-        terminateWhen("Terminates here", notNullValue());
+        // check results
+        test.failUnless(value, nullValue()); // fail if not null value
+
+
+        // proposal:
+        // JGoTest check, checkNot, and, andNot methods x 4 overloads:
+
+        // Regular
+        // check(reason, boolean)
+
+        // Hamcrest
+        // check(reason, value, matcher)
+
+        // check(reason?, cheekyMcCheekface)
+
+
+        terminateWhen(value, notNullValue());
 
         fail("We never get here");
     }

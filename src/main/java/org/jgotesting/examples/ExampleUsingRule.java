@@ -1,6 +1,6 @@
 package org.jgotesting.examples;
 
-import org.jgotesting.TRule;
+import org.jgotesting.JGoTest;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import static org.jgotesting.Testing.*;
 
 public class ExampleUsingRule {
     @Rule
-    public TRule t = new TRule();
+    public JGoTest test = new JGoTest();
 
     @Test
     public void succeeds() throws Exception {
@@ -18,13 +18,13 @@ public class ExampleUsingRule {
 
     @Test
     public void failsUsingRule() throws Exception {
-        t.fail();
+        test.fail();
     }
 
     @Test
     public void failsTwiceUsingRule() throws Exception {
-        t.fail("once");
-        t.fail("twice");
+        test.fail("once");
+        test.fail("twice");
     }
 
     @Test
@@ -37,21 +37,21 @@ public class ExampleUsingRule {
     @Test
     public void thisUsesMixOfStaticAndParameterMethods() throws Exception {
         log("First message is just logging");
-        t.fail("Second message is an error");
+        test.fail("Second message is an error");
     }
 
     @Test
     public void failsPartwayThrough() throws Exception {
-        t.fail("partway");
-        t.terminate("this is the end");
+        test.fail("partway");
+        test.terminate("this is the end");
 
-        // shouldn't get here
-        t.fail("Shouldn't get here");
+        // shouldn'test get here
+        test.fail("Shouldn'test get here");
     }
 
     @Test
     public void capturesException() throws Exception {
-        t.log("Hello");
+        test.log("Hello");
         throw new RuntimeException("oops");
     }
 

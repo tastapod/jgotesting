@@ -33,8 +33,8 @@ public class Testing {
         t().addFailure(cause);
     }
 
-    private static T t() {
-        return T.get();
+    private static JGoTest t() {
+        return JGoTest.get();
     }
 
     // Hamcrest matcher methods

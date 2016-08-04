@@ -6,13 +6,16 @@ import org.hamcrest.StringDescription;
 import org.jgotesting.events.Failure;
 import org.jgotesting.events.FatalFailure;
 import org.jgotesting.events.Message;
+import org.junit.rules.TestRule;
 import org.junit.runners.model.MultipleFailureException;
+import org.junit.runners.model.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing {
-    private static final ThreadLocal<T> instance = new ThreadLocal<>();
+@SuppressWarnings("WeakerAccess")
+public class JGoTest implements Reporting, Failing, HamcrestReporting, HamcrestFailing, TestRule {
+    private static final ThreadLocal<JGoTest> instance = new ThreadLocal<>();
 
     private final List<Throwable> events = new ArrayList<>();
     private boolean failed = false;
@@ -20,16 +23,32 @@ public class T implements Reporting, Failing, HamcrestReporting, HamcrestFailing
     /**
      * Manage access to the ThreadLocal instance
      */
-    protected T() {
+    public JGoTest() {
         instance.set(this);
     }
 
-    static T get() {
-        final T t = instance.get();
-        if (t == null) {
-            throw new RuntimeException("Add this to your test class:\n\n@Rule\npublic TRule t = new TRule();\n\n");
+    static JGoTest get() {
+        final JGoTest test = instance.get();
+        if (test == null) {
+            throw new RuntimeException("Add this to your test class:\n\n@Rule\npublic JGoTest test = new JGoTest();\n\n");
         }
-        return t;
+        return test;
+    }
+
+    @Override
+    public Statement apply(final Statement base, org.junit.runner.Description description) {
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                try {
+                    base.evaluate();
+                } catch (Throwable oops) {
+                    addFailure(oops);
+                } finally {
+                    finish();
+                }
+            }
+        };
     }
 
     @Override

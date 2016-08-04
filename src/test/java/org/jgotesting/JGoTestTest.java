@@ -3,25 +3,25 @@ package org.jgotesting;
 import org.junit.Test;
 import org.junit.runners.model.MultipleFailureException;
 
-public class TTest {
+public class JGoTestTest {
 
-    private final T t = new T();
+    private final JGoTest test = new JGoTest();
 
     @Test
     public void testFinishesCleanlyIfNothingHappened() throws Exception {
-        t.finish();
+        test.finish();
     }
 
     @Test
     public void testFailingDoesntThrowException() throws Exception {
-        t.fail("Something happened");
+        test.fail("Something happened");
     }
 
     @Test
     public void testFinishThrowsExceptionAfterFailure() throws Exception {
-        t.fail("Something happened");
+        test.fail("Something happened");
         try {
-            t.finish();
+            test.finish();
         } catch (MultipleFailureException e) {
             e.getFailures();
         }
