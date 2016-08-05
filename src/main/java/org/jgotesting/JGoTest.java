@@ -6,6 +6,10 @@ import org.hamcrest.StringDescription;
 import org.jgotesting.events.Failure;
 import org.jgotesting.events.FatalFailure;
 import org.jgotesting.events.Message;
+import org.jgotesting.traits.Checking;
+import org.jgotesting.traits.Failing;
+import org.jgotesting.traits.Reporting;
+import org.jgotesting.traits.Terminating;
 import org.junit.rules.TestRule;
 import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
@@ -13,8 +17,8 @@ import org.junit.runners.model.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("WeakerAccess")
-public class JGoTest implements Reporting, Failing, HamcrestReporting, HamcrestFailing, TestRule {
+
+public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>, Failing<JGoTest>, Terminating<JGoTest> {
     private static final ThreadLocal<JGoTest> instance = new ThreadLocal<>();
 
     private final List<Throwable> events = new ArrayList<>();
@@ -51,30 +55,141 @@ public class JGoTest implements Reporting, Failing, HamcrestReporting, HamcrestF
         };
     }
 
+
+    // reporting
+
     @Override
-    public void log(Object... args) {
+    public JGoTest log(Object... args) {
         events.add(trimStackTrace(new Message(join(args))));
+        return this;
     }
 
     @Override
-    public void logf(String format, Object... args) {
+    public JGoTest logf(String format, Object... args) {
         log(String.format(format, args));
+        return this;
     }
 
     @Override
-    public void fail(Object... args) {
+    public <V> JGoTest logWhen(String reason, V value, Matcher<? super V> matcher) {
+        if (matcher.matches(value)) {
+            get().log(describeMatch(reason, value, matcher));
+        }
+        return this;
+    }
+
+    @Override
+    public <V> JGoTest logWhen(V value, Matcher<? super V> matcher) {
+        logWhen("", value, matcher);
+        return this;
+    }
+
+    @Override
+    public <V> JGoTest logUnless(String reason, V value, Matcher<? super V> matcher) {
+        if (!matcher.matches(value)) {
+            get().log(describeMismatch(reason, value, matcher));
+        }
+        return this;
+    }
+
+    @Override
+    public <V> JGoTest logUnless(V value, Matcher<? super V> matcher) {
+        logUnless("", value, matcher);
+        return this;
+    }
+
+
+    // Checking
+
+    @Override
+    public JGoTest check(String description, boolean check) {
+        if (!check) {
+            fail(description);
+        }
+        return this;
+    }
+
+    @Override
+    public JGoTest check(boolean check) {
+        return check("", check);
+    }
+
+    @Override
+    public <V> JGoTest check(String description, V value, Checker<V> checker) {
+        return check(description, checker.check(value));
+    }
+
+    @Override
+    public <V> JGoTest check(V value, Checker<V> checker) {
+        return check("", value, checker);
+    }
+
+    @Override
+    public <V> JGoTest check(String description, V value, Matcher<? super V> matcher) {
+        if (!matcher.matches(value)) {
+            fail(describeMismatch(description, value, matcher));
+        }
+        return this;
+    }
+
+    @Override
+    public <V> JGoTest check(V value, Matcher<? super V> matcher) {
+        return check("", value, matcher);
+    }
+
+    @Override
+    public JGoTest checkNot(String description, boolean check) {
+        return check(description, !check);
+    }
+
+    @Override
+    public JGoTest checkNot(boolean check) {
+        return checkNot("", check);
+    }
+
+    @Override
+    public <V> JGoTest checkNot(String description, V value, Checker<V> checker) {
+        return checkNot(description, checker.check(value));
+    }
+
+    @Override
+    public <V> JGoTest checkNot(V value, Checker<V> checker) {
+        return checkNot("", value, checker);
+    }
+
+    @Override
+    public <V> JGoTest checkNot(String description, V value, Matcher<? super V> matcher) {
+        if (matcher.matches(value)) {
+            fail(describeMatch(description, value, matcher));
+        }
+        return this;
+    }
+
+    @Override
+    public <V> JGoTest checkNot(V value, Matcher<? super V> matcher) {
+        return checkNot("", value, matcher);
+    }
+
+
+    // Failing
+
+    @Override
+    public JGoTest fail(Object... args) {
         addFailure(join(args));
+        return this;
     }
 
     @Override
-    public void failf(String fmt, Object... args) {
+    public JGoTest failf(String fmt, Object... args) {
         fail(String.format(fmt, args));
+        return this;
     }
 
     @Override
     public void terminate(Object... args) throws Exception {
         addFatalError(join(args));
         finish();
+
     }
 
     @Override
@@ -84,89 +199,45 @@ public class JGoTest implements Reporting, Failing, HamcrestReporting, HamcrestF
     }
 
     @Override
-    public <V> void logWhen(String reason, V value, Matcher<? super V> matcher) {
-        if (matcher.matches(value)) {
-            get().log(describeMatch(reason, value, matcher));
-        }
-    }
-
-    @Override
-    public <V> void logWhen(V value, Matcher<? super V> matcher) {
-        logWhen("", value, matcher);
-    }
-
-    @Override
-    public <V> void logUnless(String reason, V value, Matcher<? super V> matcher) {
-        if (!matcher.matches(value)) {
-            get().log(describeMismatch(reason, value, matcher));
-        }
-    }
-
-    @Override
-    public <V> void logUnless(V value, Matcher<? super V> matcher) {
-        logUnless("", value, matcher);
-    }
-
-    @Override
-    public <V> void failWhen(String reason, V value, Matcher<? super V> matcher) {
-        if (matcher.matches(value)) {
-            fail(describeMatch(reason, value, matcher));
-        }
-    }
-
-    @Override
-    public <V> void failWhen(V value, Matcher<? super V> matcher) {
-        failWhen("", value, matcher);
-    }
-
-    @Override
-    public <V> void failUnless(String reason, V value, Matcher<? super V> matcher) {
-        if (!matcher.matches(value)) {
-            fail(describeMismatch(reason, value, matcher));
-        }
-    }
-
-    @Override
-    public <V> void failUnless(V value, Matcher<? super V> matcher) {
-        failUnless("", value, matcher);
-    }
-
-    @Override
-    public <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
+    public <V> JGoTest terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (matcher.matches(value)) {
             terminate(describeMatch(reason, value, matcher));
         }
+        return this;
     }
 
     @Override
-    public <V> void terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
+    public <V> JGoTest terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
         terminateWhen("", value, matcher);
+        return this;
     }
 
     @Override
-    public <V> void terminateUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
+    public <V> JGoTest terminateUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (!matcher.matches(value)) {
             terminate(describeMismatch(reason, value, matcher));
         }
+        return this;
     }
 
     @Override
-    public <V> void terminateUnless(V value, Matcher<? super V> matcher) throws Exception {
+    public <V> JGoTest terminateUnless(V value, Matcher<? super V> matcher) throws Exception {
         terminateUnless("", value, matcher);
+        return this;
     }
 
-    private static <V> Description describeMatch(String reason, V value, Matcher<? super V> matcher) {
+    private static <V> Description describeMatch(String description, V value, Matcher<? super V> matcher) {
         return new StringDescription()
-                .appendText(reason)
+                .appendText(description)
                 .appendText("\nDidn't want: ")
                 .appendDescriptionOf(matcher)
                 .appendText("\nbut got:     ")
                 .appendValue(value);
     }
 
-    private static <V> Description describeMismatch(String reason, V value, Matcher<? super V> matcher) {
+    private static <V> Description describeMismatch(String description, V value, Matcher<? super V> matcher) {
         return new StringDescription()
-                .appendText(reason)
+                .appendText(description)
                 .appendText("\nWanted:  ")
                 .appendDescriptionOf(matcher)
                 .appendText("\nbut got: ")
@@ -176,7 +247,7 @@ public class JGoTest implements Reporting, Failing, HamcrestReporting, HamcrestF
     /**
      * throws an exception if anything went wrong during the test
      */
-    protected void finish() throws Exception {
+    private void finish() throws Exception {
         try {
             if (failed) {
                 throw new MultipleFailureException(events);
@@ -218,7 +289,7 @@ public class JGoTest implements Reporting, Failing, HamcrestReporting, HamcrestF
         addFailure(new FatalFailure(message));
     }
 
-    protected void addFailure(Throwable cause) {
+    void addFailure(Throwable cause) {
         events.add(trimStackTrace(cause));
         failed = true;
     }

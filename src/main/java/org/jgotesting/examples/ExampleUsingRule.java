@@ -1,5 +1,8 @@
 package org.jgotesting.examples;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.jgotesting.Checker;
 import org.jgotesting.JGoTest;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,5 +78,57 @@ public class ExampleUsingRule {
         checkEquals(1, 2);
 
         checkEquals(3, 2);
+    }
+
+    private class Person {
+        private final String name;
+        private final int age;
+        private final int height;
+
+        Person(String name, int age, int height) {
+            this.name = name;
+            this.age = age;
+            this.height = height;
+        }
+    }
+
+    @Test
+    public void usesChainedChecks() throws Exception {
+        Person bob = new Person("Bob", 25, 185);
+        Person kate = new Person("Kate", 5, 100);
+
+        BaseMatcher<Integer> heightOver180 = new BaseMatcher<Integer>() {
+            final int MIN_HEIGHT = 180;
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("height greater than " + MIN_HEIGHT);
+            }
+
+            @Override
+            public boolean matches(Object item) {
+                if (item instanceof Integer) {
+                    int height = (Integer) item;
+                    return height > MIN_HEIGHT;
+                }
+                return false;
+            }
+        };
+
+        Checker over18 = new Checker<Person>() {
+            @Override
+            public boolean check(Person person) {
+                return false;
+            }
+        };
+
+        test.log(bob.name)
+                .check("age", bob.age >= 18)
+                .check("height", bob.height, heightOver180)
+                .checkNot("age again", bob, over18);
+
+        test.log(kate.name)
+                .checkNot("age", kate, over18)
+                .terminateUnless("height", kate.height, heightOver180);
     }
 }

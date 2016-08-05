@@ -56,19 +56,19 @@ public class Testing {
     }
 
     public static <V> void failWhen(String reason, V value, Matcher<? super V> matcher) {
-        t().failWhen(reason, value, matcher);
+        t().checkNot(reason, value, matcher);
     }
 
     public static <V> void failWhen(V value, Matcher<? super V> matcher) {
-        t().failWhen(value, matcher);
+        t().checkNot(value, matcher);
     }
 
     public static <V> void failUnless(String reason, V value, Matcher<? super V> matcher) {
-        t().failUnless(reason, value, matcher);
+        t().check(reason, value, matcher);
     }
 
     public static <V> void failUnless(V value, Matcher<? super V> matcher) {
-        t().failUnless(value, matcher);
+        t().check(value, matcher);
     }
 
     public static <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {

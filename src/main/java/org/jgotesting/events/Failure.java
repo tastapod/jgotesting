@@ -7,6 +7,6 @@ public class Failure extends Event {
 
     @Override
     public String toString() {
-        return "Failure";
+        return "Check failed";
     }
 }

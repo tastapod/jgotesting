@@ -27,22 +27,6 @@ public class ExampleUsingMatchers {
         failUnless(value, nullValue());
         failWhen(result, containsString("Spanish"));
 
-        // check results
-        test.failUnless(value, nullValue()); // fail if not null value
-
-
-        // proposal:
-        // JGoTest check, checkNot, and, andNot methods x 4 overloads:
-
-        // Regular
-        // check(reason, boolean)
-
-        // Hamcrest
-        // check(reason, value, matcher)
-
-        // check(reason?, cheekyMcCheekface)
-
-
         terminateWhen(value, notNullValue());
 
         fail("We never get here");
