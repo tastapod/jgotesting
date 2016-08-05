@@ -123,7 +123,7 @@ bintray {
     pkg {
         userOrg = 'jgotesting'
         repo = 'jgotesting'
-        name = project.name
+        name = 'org.jgotesting:jgotesting'
         desc = project.pomDescription
         licenses = ['BSD 3-Clause']
         labels = ['testing', 'junit']
