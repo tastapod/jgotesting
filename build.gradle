@@ -120,16 +120,30 @@ bintray {
     user = project.bintrayUsername
     key = project.bintrayApiKey
     publications = ['mavenCustom']
+    publish = true
+    override = true // for now
     pkg {
-        userOrg = 'jgotesting'
+        // General
         repo = 'jgotesting'
         name = 'org.jgotesting:jgotesting'
+        userOrg = project.userOrg
         desc = project.pomDescription
         licenses = ['BSD 3-Clause']
         labels = ['testing', 'junit']
-        websiteUrl = project.repositoryUrl
+
+        // URLs
         issueTrackerUrl = project.issueTrackerUrl
         vcsUrl = project.vcsUrl
-        publicDownloadNumbers = true
+        websiteUrl = project.repositoryUrl
+
+        // This version
+        version {
+            name = project.version
+            released = buildTimeAndDate
+            vcsTag = versioning.info.commit
+            issueTrackerUrl = project.issueTrackerUrl
+            vcsUrl = project.vcsUrl
+            websiteUrl = project.repositoryUrl
+        }
     }
 }
