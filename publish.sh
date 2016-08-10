@@ -25,31 +25,32 @@ function user_prop {
 
 project="$(settings_prop 'rootProject.name')"
 
-user_org="$(user_prop 'userOrg')"
 bintray_user="$(user_prop 'bintrayUsername')"
 bintray_key="$(user_prop 'bintrayApiKey')"
 gpg_password="$(user_prop 'gpgSigningPassword')"
 
+user_org="$(local_prop 'userOrg')"
 maven_username="$(user_prop 'ossrhUsername')"
 maven_password="$(user_prop 'ossrhPassword')"
 
 maven_data="{
-    "username": "$maven_username",
-    "password": "$maven_password"
+    \"username\": \"$maven_username\",
+    \"password\": \"$maven_password\"
 }"
 
 repo="$(local_prop 'repo')"
 group="$(local_prop 'group')"
 version="$(local_prop 'version')"
 
-echo "Signing $group:$project version $version"
+echo "Signing $group:$project version $version at $user_org"
 
 curl -X POST \
     -u"$bintray_user:$bintray_key" \
     -H "X-GPG-PASSPHRASE: $gpg_password" \
     -H "X-GPG-SUBJECT: tastapod" \
-    "https://api.bintray.com/gpg/$user_org/$repo/$group:$project/versions/$version"
+    "$BINTRAY_API/gpg/$user_org/$repo/$group:$project/versions/$version"
 
 curl -X POST \
     -u"$bintray_user:$bintray_key" \
-    -d"$maven_data" "maven_central_sync/$user_org/$project/$group:$project/versions/$version"
+    -H "Content-Type: application/json" \
+    -d"$maven_data" "$BINTRAY_API/maven_central_sync/$user_org/$project/$group:$project/versions/$version"

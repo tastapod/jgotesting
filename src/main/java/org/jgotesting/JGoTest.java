@@ -115,12 +115,12 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
     }
 
     @Override
-    public <V> JGoTest check(String description, V value, Checker<V> checker) {
+    public <V> JGoTest check(String description, V value, Checker<? super V> checker) {
         return check(description, checker.check(value));
     }
 
     @Override
-    public <V> JGoTest check(V value, Checker<V> checker) {
+    public <V> JGoTest check(V value, Checker<? super V> checker) {
         return check("", value, checker);
     }
 
@@ -148,12 +148,12 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
     }
 
     @Override
-    public <V> JGoTest checkNot(String description, V value, Checker<V> checker) {
+    public <V> JGoTest checkNot(String description, V value, Checker<? super V> checker) {
         return checkNot(description, checker.check(value));
     }
 
     @Override
-    public <V> JGoTest checkNot(V value, Checker<V> checker) {
+    public <V> JGoTest checkNot(V value, Checker<? super V> checker) {
         return checkNot("", value, checker);
     }
 
@@ -199,6 +199,29 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
     }
 
     @Override
+    public JGoTest terminateWhen(String description, boolean check) throws Exception {
+        if (check) {
+            terminate(description);
+        }
+        return this;
+    }
+
+    @Override
+    public JGoTest terminateWhen(boolean check) throws Exception {
+        return terminateWhen("", check);
+    }
+
+    @Override
+    public <V> JGoTest terminateWhen(V value, Checker<? super V> checker) throws Exception {
+        return terminateWhen(checker.check(value));
+    }
+
+    @Override
+    public <V> JGoTest terminateWhen(String description, V value, Checker<? super V> checker) throws Exception {
+        return terminateWhen(description, checker.check(value));
+    }
+
+    @Override
     public <V> JGoTest terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (matcher.matches(value)) {
             terminate(describeMatch(reason, value, matcher));
@@ -210,6 +233,29 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
     public <V> JGoTest terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
         terminateWhen("", value, matcher);
         return this;
+    }
+
+    @Override
+    public JGoTest terminateUnless(String description, boolean check) throws Exception {
+        if (!check) {
+            terminate(description);
+        }
+        return this;
+    }
+
+    @Override
+    public JGoTest terminateUnless(boolean check) throws Exception {
+        return terminateUnless("", check);
+    }
+
+    @Override
+    public <V> JGoTest terminateUnless(V value, Checker<? super V> checker) throws Exception {
+        return terminateUnless(checker.check(value));
+    }
+
+    @Override
+    public <V> JGoTest terminateUnless(String description, V value, Checker<? super V> checker) throws Exception {
+        return terminateUnless(description, checker.check(value));
     }
 
     @Override

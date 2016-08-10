@@ -24,6 +24,7 @@
 - [x] have T.failWhen(matcher), T.failUnless(matcher), etc., so t.terminateWhen(foo, nullValue());
 - [ ] make it work with JMock
 - [ ] make it work with Mockito
+- [ ] `terminateWhen` shouldn't chain
 
 ## Behaviour that needs tests
 
