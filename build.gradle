@@ -4,7 +4,6 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.7.1'
     id 'net.nemerosa.versioning' version '2.3.0'
 }
 
@@ -90,9 +89,6 @@ jar {
     }
 }
 
-if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = ''
-if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = ''
-
 publishing {
     publications {
         mavenCustom(MavenPublication) {
@@ -112,38 +108,6 @@ publishing {
                 asNode().children().last() + pomConfig
                 asNode().appendNode('description', project.pomDescription)
             }
-        }
-    }
-}
-
-bintray {
-    user = project.bintrayUsername
-    key = project.bintrayApiKey
-    publications = ['mavenCustom']
-    publish = true
-    override = true // for now
-    pkg {
-        // General
-        repo = 'jgotesting'
-        name = 'org.jgotesting:jgotesting'
-        userOrg = project.userOrg
-        desc = project.pomDescription
-        licenses = ['BSD 3-Clause']
-        labels = ['testing', 'junit']
-
-        // URLs
-        issueTrackerUrl = project.issueTrackerUrl
-        vcsUrl = project.vcsUrl
-        websiteUrl = project.repositoryUrl
-
-        // This version
-        version {
-            name = project.version
-            released = buildTimeAndDate
-            vcsTag = versioning.info.commit
-            issueTrackerUrl = project.issueTrackerUrl
-            vcsUrl = project.vcsUrl
-            websiteUrl = project.repositoryUrl
         }
     }
 }
