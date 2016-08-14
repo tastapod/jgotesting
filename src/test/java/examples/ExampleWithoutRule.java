@@ -1,4 +1,4 @@
-package org.jgotesting.examples;
+package examples;
 
 import org.junit.Test;
 

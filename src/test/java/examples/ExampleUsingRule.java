@@ -1,9 +1,9 @@
-package org.jgotesting.examples;
+package examples;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.jgotesting.Checker;
-import org.jgotesting.JGoTest;
+import org.jgotesting.rule.JGoTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import static org.jgotesting.Testing.*;
 
 public class ExampleUsingRule {
     @Rule
-    public JGoTest test = new JGoTest();
+    public JGoTestRule test = new JGoTestRule();
 
     @Test
     public void succeeds() throws Exception {

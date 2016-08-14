@@ -10,53 +10,25 @@ import org.jgotesting.traits.Checking;
 import org.jgotesting.traits.Failing;
 import org.jgotesting.traits.Reporting;
 import org.jgotesting.traits.Terminating;
-import org.junit.rules.TestRule;
 import org.junit.runners.model.MultipleFailureException;
-import org.junit.runners.model.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>, Failing<JGoTest>, Terminating<JGoTest> {
-    private static final ThreadLocal<JGoTest> instance = new ThreadLocal<>();
-
+public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<JGoTest>, Terminating<JGoTest> {
     private final List<Throwable> events = new ArrayList<>();
     private boolean failed = false;
 
     /**
-     * Manage access to the ThreadLocal instance
+     * throws an exception if anything went wrong during the test
      */
-    public JGoTest() {
-        instance.set(this);
-    }
-
-    static JGoTest get() {
-        final JGoTest test = instance.get();
-        if (test == null) {
-            throw new RuntimeException("Add this to your test class:\n\n@Rule\npublic JGoTest test = new JGoTest();\n\n");
+    protected void finish() throws Exception {
+        if (failed) {
+            throw new MultipleFailureException(events);
         }
-        return test;
     }
 
-    @Override
-    public Statement apply(final Statement base, org.junit.runner.Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                try {
-                    base.evaluate();
-                } catch (Throwable oops) {
-                    addFailure(oops);
-                } finally {
-                    finish();
-                }
-            }
-        };
-    }
-
-
-    // reporting
+    // Reporting
 
     @Override
     public JGoTest log(Object... args) {
@@ -73,7 +45,7 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
     @Override
     public <V> JGoTest logWhen(String reason, V value, Matcher<? super V> matcher) {
         if (matcher.matches(value)) {
-            get().log(describeMatch(reason, value, matcher));
+            log(describeMatch(reason, value, matcher));
         }
         return this;
     }
@@ -87,7 +59,7 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
     @Override
     public <V> JGoTest logUnless(String reason, V value, Matcher<? super V> matcher) {
         if (!matcher.matches(value)) {
-            get().log(describeMismatch(reason, value, matcher));
+            log(describeMismatch(reason, value, matcher));
         }
         return this;
     }
@@ -97,7 +69,6 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
         logUnless("", value, matcher);
         return this;
     }
-
 
     // Checking
 
@@ -170,7 +141,6 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
         return checkNot("", value, matcher);
     }
 
-
     // Failing
 
     @Override
@@ -184,6 +154,8 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
         fail(String.format(fmt, args));
         return this;
     }
+
+    // Terminating
 
     @Override
     public void terminate(Object... args) throws Exception {
@@ -272,6 +244,41 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
         return this;
     }
 
+    /**
+     * Remove references to ourselves from a stack trace
+     *
+     * @param cause throwable whose stack trace we mutate
+     */
+    private Throwable trimStackTrace(Throwable cause) {
+        final String thisPackage = JGoTest.class.getPackage().getName();
+        final String junitAssertClassName = org.junit.Assert.class.getName();
+        final List<StackTraceElement> result = new ArrayList<>();
+
+        for (StackTraceElement element : cause.getStackTrace()) {
+            String className = element.getClassName();
+            String packageName = className.substring(0, className.lastIndexOf('.'));
+
+            if (!packageName.startsWith(thisPackage) && !className.equals(junitAssertClassName)) {
+                result.add(element);
+            }
+        }
+        cause.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
+        return cause;
+    }
+
+    private void addFailure(String message) {
+        addFailure(new Failure(message));
+    }
+
+    private void addFatalError(String message) {
+        addFailure(new FatalFailure(message));
+    }
+
+    protected void addFailure(Throwable cause) {
+        events.add(trimStackTrace(cause));
+        failed = true;
+    }
+
     private static <V> Description describeMatch(String description, V value, Matcher<? super V> matcher) {
         return new StringDescription()
                 .appendText(description)
@@ -288,56 +295,6 @@ public class JGoTest implements TestRule, Reporting<JGoTest>, Checking<JGoTest>,
                 .appendDescriptionOf(matcher)
                 .appendText("\nbut got: ")
                 .appendValue(value);
-    }
-
-    /**
-     * throws an exception if anything went wrong during the test
-     */
-    private void finish() throws Exception {
-        try {
-            if (failed) {
-                throw new MultipleFailureException(events);
-            }
-        } finally {
-            instance.remove();
-        }
-    }
-
-    // TODO (maybe) skip, skipf, skipped (override BlockJUnit4ClassRunner#runChild)
-
-    /**
-     * Remove references to ourselves from a stack trace
-     *
-     * @param cause throwable whose stack trace we mutate
-     */
-    private Throwable trimStackTrace(Throwable cause) {
-        final String thisPackage = getClass().getPackage().getName();
-        final String junitAssertClassName = org.junit.Assert.class.getName();
-        final List<StackTraceElement> result = new ArrayList<>();
-
-        for (StackTraceElement element : cause.getStackTrace()) {
-            String className = element.getClassName();
-            String packageName = className.substring(0, className.lastIndexOf('.'));
-
-            if (!thisPackage.equals(packageName) && !className.equals(junitAssertClassName)) {
-                result.add(element);
-            }
-        }
-        cause.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
-        return cause;
-    }
-
-    private void addFailure(String message) {
-        addFailure(new Failure(message));
-    }
-
-    private void addFatalError(String message) {
-        addFailure(new FatalFailure(message));
-    }
-
-    void addFailure(Throwable cause) {
-        events.add(trimStackTrace(cause));
-        failed = true;
     }
 
     /**

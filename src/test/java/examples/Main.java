@@ -1,4 +1,4 @@
-package org.jgotesting.examples;
+package examples;
 
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;

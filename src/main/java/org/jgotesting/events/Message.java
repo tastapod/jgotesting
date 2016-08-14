@@ -5,9 +5,4 @@ public class Message extends Event {
         super(message);
         setStackTrace(new StackTraceElement[0]);
     }
-
-    @Override
-    public String toString() {
-        return getMessage();
-    }
 }

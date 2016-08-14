@@ -1,6 +1,7 @@
 package org.jgotesting;
 
 import org.hamcrest.Matcher;
+import org.jgotesting.rule.JGoTestRule;
 
 @SuppressWarnings("unused")
 public class Testing {
@@ -34,7 +35,7 @@ public class Testing {
     }
 
     private static JGoTest t() {
-        return JGoTest.get();
+        return JGoTestRule.get();
     }
 
     // Hamcrest matcher methods
