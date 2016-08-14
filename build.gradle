@@ -7,12 +7,6 @@ plugins {
     id 'net.nemerosa.versioning' version '2.3.0'
 }
 
-Date buildTimeAndDate = new Date()
-ext {
-    buildDate = new SimpleDateFormat('yyyy-MM-dd').format(buildTimeAndDate)
-    buildTime = new SimpleDateFormat('HH:mm:ss.SSSZ').format(buildTimeAndDate)
-}
-
 repositories {
     mavenCentral()
 }
@@ -33,8 +27,8 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives jar
-    archives javadocJar
     archives sourcesJar
+    archives javadocJar
 }
 
 def pomConfig = {
@@ -61,10 +55,16 @@ def pomConfig = {
             id 'dn'
             name 'Dan North'
             email 'dan@dannorth.net'
-            url 'http://dannorth.net/'
+            url 'http://dannorth.net'
             timezone 'Europe/London'
         }
     }
+}
+
+Date buildTimeAndDate = new Date()
+ext {
+    buildDate = new SimpleDateFormat('yyyy-MM-dd').format(buildTimeAndDate)
+    buildTime = new SimpleDateFormat('HH:mm:ss.SSSZ').format(buildTimeAndDate)
 }
 
 jar {
