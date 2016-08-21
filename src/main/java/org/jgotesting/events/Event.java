@@ -1,6 +1,8 @@
 package org.jgotesting.events;
 
-public class Event extends RuntimeException {
+public abstract class Event extends RuntimeException {
+
+    protected abstract String prefix();
 
     public Event(Throwable cause) {
         super(cause);
@@ -16,6 +18,12 @@ public class Event extends RuntimeException {
 
     @Override
     public String toString() {
-        return String.format("%s(%s)", getClass().getName(), getMessage());
+        String msg = getLocalizedMessage();
+
+        if (msg == null || msg.equals("")) {
+            return prefix();
+        } else {
+            return String.format("%s: %s", prefix(), msg);
+        }
     }
 }

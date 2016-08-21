@@ -5,7 +5,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.jgotesting.events.Failure;
 import org.jgotesting.events.FatalFailure;
-import org.jgotesting.events.Message;
+import org.jgotesting.events.LogMessage;
 import org.jgotesting.traits.Checking;
 import org.jgotesting.traits.Failing;
 import org.jgotesting.traits.Reporting;
@@ -32,7 +32,7 @@ public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<J
 
     @Override
     public JGoTest log(Object... args) {
-        events.add(trimStackTrace(new Message(join(args))));
+        events.add(trimStackTrace(new LogMessage(join(args))));
         return this;
     }
 

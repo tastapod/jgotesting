@@ -1,7 +1,7 @@
 package org.jgotesting;
 
 import org.jgotesting.events.Failure;
-import org.jgotesting.events.Message;
+import org.jgotesting.events.LogMessage;
 import org.junit.Test;
 import org.junit.runners.model.MultipleFailureException;
 
@@ -45,7 +45,7 @@ public class JGoTestTest {
             test.finish();
             throw new RuntimeException("Shouldn't get here");
         } catch (MultipleFailureException expected) {
-            assertThat(expected, Matchers.containsEvent(new Message("Something happened")));
+            assertThat(expected, Matchers.containsEvent(new LogMessage("Something happened")));
             assertThat(expected, Matchers.containsEvent(new Failure("Something failed")));
         }
     }
