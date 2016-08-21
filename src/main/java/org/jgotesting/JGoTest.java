@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<JGoTest>, Terminating<JGoTest> {
-    private final List<Throwable> events = new ArrayList<>();
-    private boolean failed = false;
+    protected final List<Throwable> events = new ArrayList<>();
+    protected boolean failed = false;
 
     /**
      * throws an exception if anything went wrong during the test

@@ -1,90 +1,104 @@
 package org.jgotesting;
 
 import org.hamcrest.Matcher;
-import org.jgotesting.rule.JGoTestRule;
 
 @SuppressWarnings("unused")
 public class Testing {
+    private static final ThreadLocal<JGoTest> instance = new ThreadLocal<>();
 
     public static void log(Object... args) {
-        t().log(args);
+        test().log(args);
     }
 
     public static void logf(String format, Object... args) {
-        t().logf(format, args);
+        test().logf(format, args);
     }
 
     public static void fail(Object... args) {
-        t().fail(args);
+        test().fail(args);
     }
 
     public static void failf(String fmt, Object... args) {
-        t().failf(fmt, args);
+        test().failf(fmt, args);
     }
 
     public static void terminate(Object... args) throws Exception {
-        t().terminate(args);
+        test().terminate(args);
     }
 
     public static void failfNow(String fmt, Object... args) throws Exception {
-        t().terminatef(fmt, args);
+        test().terminatef(fmt, args);
     }
 
     public static void _addFailure(Throwable cause) {
-        t().addFailure(cause);
-    }
-
-    private static JGoTest t() {
-        return JGoTestRule.get();
+        test().addFailure(cause);
     }
 
     // Hamcrest matcher methods
 
     public static <V> void logWhen(String reason, V value, Matcher<? super V> matcher) {
-        t().logWhen(reason, value, matcher);
+        test().logWhen(reason, value, matcher);
     }
 
     public static <V> void logWhen(V value, Matcher<? super V> matcher) {
-        t().logWhen(value, matcher);
+        test().logWhen(value, matcher);
     }
 
     public static <V> void logUnless(String reason, V value, Matcher<? super V> matcher) {
-        t().logUnless(reason, value, matcher);
+        test().logUnless(reason, value, matcher);
     }
 
     public static <V> void logUnless(V value, Matcher<? super V> matcher) {
-        t().logUnless(value, matcher);
+        test().logUnless(value, matcher);
     }
 
     public static <V> void failWhen(String reason, V value, Matcher<? super V> matcher) {
-        t().checkNot(reason, value, matcher);
+        test().checkNot(reason, value, matcher);
     }
 
     public static <V> void failWhen(V value, Matcher<? super V> matcher) {
-        t().checkNot(value, matcher);
+        test().checkNot(value, matcher);
     }
 
     public static <V> void failUnless(String reason, V value, Matcher<? super V> matcher) {
-        t().check(reason, value, matcher);
+        test().check(reason, value, matcher);
     }
 
     public static <V> void failUnless(V value, Matcher<? super V> matcher) {
-        t().check(value, matcher);
+        test().check(value, matcher);
     }
 
     public static <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
-        t().terminateWhen(reason, value, matcher);
+        test().terminateWhen(reason, value, matcher);
     }
 
     public static <V> void terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
-        t().terminateWhen(value, matcher);
+        test().terminateWhen(value, matcher);
     }
 
     public static <V> void terminateUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {
-        t().terminateUnless(reason, value, matcher);
+        test().terminateUnless(reason, value, matcher);
     }
 
     public static <V> void terminateUnless(V value, Matcher<? super V> matcher) throws Exception {
-        t().terminateUnless(value, matcher);
+        test().terminateUnless(value, matcher);
+    }
+
+    // Access to ThreadLocal instance
+
+    public static void setInstance(JGoTest test) {
+        instance.set(test);
+    }
+
+    public static void removeInstance() {
+        instance.remove();
+    }
+
+    private static JGoTest test() {
+        final JGoTest test = instance.get();
+        if (test == null) {
+            throw new RuntimeException("Add this to your test class:\n\n@Rule\npublic JGoTestRule test = new JGoTestRule();\n\n");
+        }
+        return test;
     }
 }

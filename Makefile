@@ -52,7 +52,7 @@ now := $(shell date -u +"%Y-%m-%d'T'%H:%M:%S")
 artifacts := $(wildcard $(m2_dir)/*)
 uploaded := $(patsubst %,build/upload_%.done,$(notdir $(artifacts)))
 
-$(uploaded): build/upload_%.done: $(m2_dir)/% $(PUBLISHED_POM)
+build/upload_%.done: $(m2_dir)/% $(PUBLISHED_POM)
 	# Uploading $<
 	file="$(subst $(LOCAL_M2)/,,$<)" && \
 	curl --fail \
