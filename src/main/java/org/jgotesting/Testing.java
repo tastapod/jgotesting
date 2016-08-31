@@ -69,11 +69,11 @@ public class Testing {
     }
 
     public static <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
-        test().terminateWhen(reason, value, matcher);
+        test().terminateIf(reason, value, matcher);
     }
 
     public static <V> void terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
-        test().terminateWhen(value, matcher);
+        test().terminateIf(value, matcher);
     }
 
     public static <V> void terminateUnless(String reason, V value, Matcher<? super V> matcher) throws Exception {

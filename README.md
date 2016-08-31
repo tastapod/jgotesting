@@ -6,53 +6,106 @@
 - It should be possible to stop a test when a failed check means there is no point going on.
 - Exceptions are an expensive and inappropriate way to model errors.
 
-## Approach
+## Quick start
 
-- Try to use seams in JUnit where possible
-- Write a custom `org.junit.runner.Runner` (maybe extend `BlockJUnit4ClassRunner`)
-- Write a custom `org.junit.runners.model.Statement` that injects a T and captures its output
+1. Add a JGoTesting `@Rule` instance to your test class.
 
-## Todo
+```java
+import org.jgotesting.rule.JGoTestingRule;
 
-- [x] implement T.fail()
-- [x] implement other T methods (log, error, etc.)
-- [x] report failures at end
-- [x] implement T.terminate()
-- [x] show multiple errors as test failures
-- [x] implement assert, assertEquals, etc. probably in Assert
-- [x] have static import versions
-- [x] have T.failWhen(matcher), T.failUnless(matcher), etc., so t.terminateWhen(foo, nullValue());
-- [ ] make it work with JMock
-- [ ] make it work with Mockito
-- [ ] `terminateWhen` shouldn't chain
+public class MyTest {
+    @org.junit.Rule
+    public final JGoTestRule test = new JGoTestRule();
+}
+```
 
-## Behaviour that needs tests
+2. Use JGoTesting's static `assertXxx` methods in place of the JUnit ones
+   just by replacing an import. Or use the `checkXxx` ones if you prefer.
+   All tests in a class with the `@Rule` will be managed by JGoTesting.
 
-### JGoTesting
+```java
+import static org.jgotesting.Assert.*; // same methods as org.junit.Assert.*
+import static org.jgotesting.Check.*; // ditto, with different names
 
-- [x] checks the `@Test` method is public, non-static, void and takes a single T parameter
+public class MyTest {
 
-### T
+    @Rule
+    public final JGoTestRule test = new JGoTestRule();
 
-- [ ] `fail()`, `error()` etc. register messages and mark as failed
-- [ ] `log`, `logf` register messages and don't mark as failed
-- [ ] `fail`, `terminate`, etc. throws an exception
-- [ ] Hamcrest matchers work
+    @Test
+    public void checksSeveralThings() {
+        // These are all checked, then they all report as failures
 
+        // using assert methods
+        assertEqual("this fails", "one", "ONE");
+        assertEqual("this also fails", "two", "TWO");
 
-### InvokeJGoTestingMethod
+        // same again using check aliases
+        checkEqual("so does this", "one", "ONE");
+        checkEqual("and this", "two", "TWO");
 
-- [ ] throws an exception if there was a failure
+        // Test fails with four errors. Sweet!
+    }
+}
+```
 
+3. The rule instance is a reference to the current test, so you can
+   chain checks together. You can also log messages that will only
+   be printed if the test fails. That way you can capture narrative
+   about a test without having lots of verbose output for passing tests.
 
-## How to realse to Maven Central
+```java
+public class MyTest {
 
-1. Run `gradle uploadArchives` to deploy to Sonatypes OSS repository. The upload goes to the
-snapshot repository if the version ends with "-VERSION" and otherwise to the Maven Central
-staging repository.
-2. Log in to Nexus OSS to verify the staged artifacts and release them
-using [these instructions](http://central.sonatype.org/pages/releasing-the-deployment.html).
+    @Rule
+    public final JGoTestRule test = new JGoTestRule();
 
-### Required configuration
+    @Test
+    public void checksSeveralThings() {
 
-Copy `gradle.properties.example` to `~/.gradle/gradle.properties` and enter your details.
+        test.log("This message only appears if we fail");
+
+        // All these are checked, then they all report as failures
+        test
+            .check("this fails", "one", equalTo("ONE")) // Hamcrest matcher
+            .check("this also fails", "two", equalTo("TWO"))
+            .check("so does this", "one".equals("ONE")) // boolean check
+            .check("and this", "two".equals("TWO"));
+
+        // Fails with four errors. Sweet!
+    }
+}
+```
+4. Sometimes a test fails and there is no point continuing. In that case
+   you can terminate the test with a message, or throw an exception like
+   you would elsewhere:
+
+```java
+public class MyTest {
+
+    @Rule
+    public final JGoTestRule test = new JGoTestRule();
+
+    @Test
+    public void terminatesEarly() {
+        // ...
+        test.terminateIf("unlikely", moon, madeOf("cheese"));
+
+        // We may not get here
+        test.terminate("It's no use. I can't go on.");
+
+        // We definitely won't get here
+        throw new IllegalStateException("how did we get here?");
+    }
+}
+```
+
+## Worth knowing about
+
+- All the `log`, `check` and `terminate` methods work with either a simple
+  boolean expression, a Hamcrest `Matcher<>`, or a `Checker<>`, which is
+  a Single Abstract Method (SAM) interface so you can use Java 8 lambdas
+  for checking.
+
+- The `log`, `fail` and `terminate` methods have `logf`, `failf` and
+  `terminatef` variants that take `printf`-like string formatters.

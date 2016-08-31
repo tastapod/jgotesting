@@ -21,32 +21,32 @@ public interface Terminating<T extends Terminating> {
     /**
      * Terminate with a description if check is true
      */
-    T terminateWhen(String description, boolean check) throws Exception;
+    T terminateIf(String description, boolean check) throws Exception;
 
     /**
      * Terminate if check is true
      */
-    T terminateWhen(boolean check) throws Exception;
+    T terminateIf(boolean check) throws Exception;
 
     /**
      * Terminate with a description if check is true
      */
-    <V> T terminateWhen(String description, V value, Checker<? super V> checker) throws Exception;
+    <V> T terminateIf(String description, V value, Checker<? super V> checker) throws Exception;
 
     /**
      * Terminate if check is true
      */
-    <V> T terminateWhen(V value, Checker<? super V> checker) throws Exception;
+    <V> T terminateIf(V value, Checker<? super V> checker) throws Exception;
 
     /**
      * Terminate with a description if we match
      */
-    <V> T terminateWhen(String description, V value, Matcher<? super V> matcher) throws Exception;
+    <V> T terminateIf(String description, V value, Matcher<? super V> matcher) throws Exception;
 
     /**
      * Terminate if we match
      */
-    <V> T terminateWhen(V value, Matcher<? super V> matcher) throws Exception;
+    <V> T terminateIf(V value, Matcher<? super V> matcher) throws Exception;
 
     /**
      * Terminute with a description if we don't match

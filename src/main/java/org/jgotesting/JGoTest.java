@@ -171,7 +171,7 @@ public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<J
     }
 
     @Override
-    public JGoTest terminateWhen(String description, boolean check) throws Exception {
+    public JGoTest terminateIf(String description, boolean check) throws Exception {
         if (check) {
             terminate(description);
         }
@@ -179,22 +179,22 @@ public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<J
     }
 
     @Override
-    public JGoTest terminateWhen(boolean check) throws Exception {
-        return terminateWhen("", check);
+    public JGoTest terminateIf(boolean check) throws Exception {
+        return terminateIf("", check);
     }
 
     @Override
-    public <V> JGoTest terminateWhen(V value, Checker<? super V> checker) throws Exception {
-        return terminateWhen(checker.check(value));
+    public <V> JGoTest terminateIf(V value, Checker<? super V> checker) throws Exception {
+        return terminateIf(checker.check(value));
     }
 
     @Override
-    public <V> JGoTest terminateWhen(String description, V value, Checker<? super V> checker) throws Exception {
-        return terminateWhen(description, checker.check(value));
+    public <V> JGoTest terminateIf(String description, V value, Checker<? super V> checker) throws Exception {
+        return terminateIf(description, checker.check(value));
     }
 
     @Override
-    public <V> JGoTest terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
+    public <V> JGoTest terminateIf(String reason, V value, Matcher<? super V> matcher) throws Exception {
         if (matcher.matches(value)) {
             terminate(describeMatch(reason, value, matcher));
         }
@@ -202,8 +202,8 @@ public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<J
     }
 
     @Override
-    public <V> JGoTest terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
-        terminateWhen("", value, matcher);
+    public <V> JGoTest terminateIf(V value, Matcher<? super V> matcher) throws Exception {
+        terminateIf("", value, matcher);
         return this;
     }
 
@@ -247,20 +247,43 @@ public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<J
     /**
      * Remove references to ourselves from a stack trace
      *
+     * Use the list from {@link junit.runner.BaseTestRunner#getFilteredTrace}
+     *
      * @param cause throwable whose stack trace we mutate
      */
     private Throwable trimStackTrace(Throwable cause) {
-        final String thisPackage = JGoTest.class.getPackage().getName();
-        final String junitAssertClassName = org.junit.Assert.class.getName();
+
+        final String[] junitPatterns = new String[]{
+                "junit.framework.TestCase",
+                "junit.framework.TestResult",
+                "junit.framework.TestSuite",
+                "junit.framework.Assert.", // don't filter AssertionFailure
+                "junit.swingui.TestRunner",
+                "junit.awtui.TestRunner",
+                "junit.textui.TestRunner",
+                "java.lang.reflect.Method.invoke(",
+                "org.junit.rules." // added because we are running as a @Rule
+        };
+
+        final String thisPackage = JGoTest.class.getPackage().getName() + ".";
+
         final List<StackTraceElement> result = new ArrayList<>();
 
-        for (StackTraceElement element : cause.getStackTrace()) {
+        outer: for (StackTraceElement element : cause.getStackTrace()) {
             String className = element.getClassName();
-            String packageName = className.substring(0, className.lastIndexOf('.'));
-
-            if (!packageName.startsWith(thisPackage) && !className.equals(junitAssertClassName)) {
-                result.add(element);
+            if (className.startsWith(thisPackage)) {
+                // skip this one
+                continue;
             }
+            for (String junitPattern : junitPatterns) {
+                if (className.startsWith(junitPattern)) {
+                    // skip this one
+                    continue outer;
+                }
+            }
+
+            // valid stack trace element
+            result.add(element);
         }
         cause.setStackTrace(result.toArray(new StackTraceElement[result.size()]));
         return cause;

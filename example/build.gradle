@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.jgotesting:jgotesting:0.10'
+}
+
+task run(type:JavaExec) {
+   main = 'examples.Main'
+   classpath = sourceSets.main.runtimeClasspath
+}
+
+artifacts {
+    archives jar
+}

@@ -2,6 +2,7 @@ package examples;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.jgotesting.Checker;
 import org.jgotesting.rule.JGoTestRule;
 import org.junit.Rule;
@@ -48,7 +49,7 @@ public class ExampleUsingRule {
         test.fail("partway");
         test.terminate("this is the end");
 
-        // shouldn'test get here
+        // shouldn't get here
         test.fail("Shouldn'test get here");
     }
 
@@ -97,24 +98,6 @@ public class ExampleUsingRule {
         Person bob = new Person("Bob", 25, 185);
         Person kate = new Person("Kate", 5, 100);
 
-        BaseMatcher<Integer> heightOver180 = new BaseMatcher<Integer>() {
-            final int MIN_HEIGHT = 180;
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("height greater than " + MIN_HEIGHT);
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                if (item instanceof Integer) {
-                    int height = (Integer) item;
-                    return height > MIN_HEIGHT;
-                }
-                return false;
-            }
-        };
-
         Checker over18 = new Checker<Person>() {
             @Override
             public boolean check(Person person) {
@@ -124,11 +107,30 @@ public class ExampleUsingRule {
 
         test.log(bob.name)
                 .check("age", bob.age >= 18)
-                .check("height", bob.height, heightOver180)
+                .check("height", bob.height, heightOver(180))
                 .checkNot("age again", bob, over18);
 
         test.log(kate.name)
                 .checkNot("age", kate, over18)
-                .terminateUnless("height", kate.height, heightOver180);
+                .terminateUnless("height", kate.height, heightOver(100));
+    }
+
+    private Matcher<Integer> heightOver(final int minHeight) {
+        return new BaseMatcher<Integer>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("height greater than " + minHeight);
+            }
+
+            @Override
+            public boolean matches(Object item) {
+                if (item instanceof Integer) {
+                    int height = (Integer) item;
+                    return height > minHeight;
+                }
+                return false;
+            }
+        };
     }
 }
