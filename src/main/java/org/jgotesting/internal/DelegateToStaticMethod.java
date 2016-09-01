@@ -49,7 +49,7 @@ public class DelegateToStaticMethod implements InvocationHandler {
             MethodSignature that = (MethodSignature) o;
 
             if (!name.equals(that.name)) return false;
-            // Probably incorrect - comparing Object[] arrays with Arrays.equals
+            // FIXME: Probably incorrect - comparing Object[] arrays with Arrays.equals
             return Arrays.equals(parameterTypes, that.parameterTypes);
 
         }

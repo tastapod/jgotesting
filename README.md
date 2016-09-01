@@ -50,9 +50,10 @@ public class MyTest {
 ```
 
 3. The rule instance is a reference to the current test, so you can
-   chain checks together. You can also log messages that will only
-   be printed if the test fails. That way you can capture narrative
-   about a test without having lots of verbose output for passing tests.
+   chain checks together. You can log messages that will only
+   be printed if the test fails, using `log` methods. That way you can
+   capture narrative about a test without having lots of verbose output
+   for passing tests.
 
 ```java
 public class MyTest {
@@ -109,3 +110,6 @@ public class MyTest {
 
 - The `log`, `fail` and `terminate` methods have `logf`, `failf` and
   `terminatef` variants that take `printf`-like string formatters.
+
+- The `Testing` class contains static versions of all the `log`, `fail`
+  and `terminate` method variants.
