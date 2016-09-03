@@ -10,44 +10,43 @@
 
 1. Add a JGoTesting `@Rule` instance to your test class.
 
-```java
-import org.jgotesting.rule.JGoTestingRule;
+  ```java import org.jgotesting.rule.JGoTestingRule;
 
-public class MyTest {
-    @org.junit.Rule
-    public final JGoTestRule test = new JGoTestRule();
-}
-```
+  public class MyTest {
+      @org.junit.Rule
+      public final JGoTestRule test = new JGoTestRule();
+  }
+  ```
 
 2. Use JGoTesting's static `assertXxx` methods in place of the JUnit ones
    just by replacing an import. Or use the `checkXxx` ones if you prefer.
    All tests in a class with the `@Rule` will be managed by JGoTesting.
 
-```java
-import static org.jgotesting.Assert.*; // same methods as org.junit.Assert.*
-import static org.jgotesting.Check.*; // ditto, with different names
+  ```java import static org.jgotesting.Assert.*; // same methods as
+  org.junit.Assert.* import static org.jgotesting.Check.*; // ditto, with
+  different names
 
-public class MyTest {
+  public class MyTest {
 
-    @Rule
-    public final JGoTestRule test = new JGoTestRule();
+      @Rule
+      public final JGoTestRule test = new JGoTestRule();
 
-    @Test
-    public void checksSeveralThings() {
-        // These are all checked, then they all report as failures
+      @Test
+      public void checksSeveralThings() {
+          // These are all checked, then they all report as failures
 
-        // using assert methods
-        assertEqual("this fails", "one", "ONE");
-        assertEqual("this also fails", "two", "TWO");
+          // using assert methods
+          assertEqual("this fails", "one", "ONE");
+          assertEqual("this also fails", "two", "TWO");
 
-        // same again using check aliases
-        checkEqual("so does this", "one", "ONE");
-        checkEqual("and this", "two", "TWO");
+          // same again using check aliases
+          checkEqual("so does this", "one", "ONE");
+          checkEqual("and this", "two", "TWO");
 
-        // Test fails with four errors. Sweet!
-    }
-}
-```
+          // Test fails with four errors. Sweet!
+      }
+  }
+  ```
 
 3. The rule instance is a reference to the current test, so you can
    chain checks together. You can log messages that will only
@@ -55,51 +54,49 @@ public class MyTest {
    capture narrative about a test without having lots of verbose output
    for passing tests.
 
-```java
-public class MyTest {
+  ```java public class MyTest {
 
-    @Rule
-    public final JGoTestRule test = new JGoTestRule();
+      @Rule
+      public final JGoTestRule test = new JGoTestRule();
 
-    @Test
-    public void checksSeveralThings() {
+      @Test
+      public void checksSeveralThings() {
 
-        test.log("This message only appears if we fail");
+          test.log("This message only appears if we fail");
 
-        // All these are checked, then they all report as failures
-        test
-            .check("this fails", "one", equalTo("ONE")) // Hamcrest matcher
-            .check("this also fails", "two", equalTo("TWO"))
-            .check("so does this", "one".equals("ONE")) // boolean check
-            .check("and this", "two".equals("TWO"));
+          // All these are checked, then they all report as failures
+          test
+              .check("this fails", "one", equalTo("ONE")) // Hamcrest matcher
+              .check("this also fails", "two", equalTo("TWO"))
+              .check("so does this", "one".equals("ONE")) // boolean check
+              .check("and this", "two".equals("TWO"));
 
-        // Fails with four errors. Sweet!
-    }
-}
-```
+          // Fails with four errors. Sweet!
+      }
+  }
+  ```
 4. Sometimes a test fails and there is no point continuing. In that case
    you can terminate the test with a message, or throw an exception like
    you would elsewhere:
 
-```java
-public class MyTest {
+  ```java public class MyTest {
 
-    @Rule
-    public final JGoTestRule test = new JGoTestRule();
+      @Rule
+      public final JGoTestRule test = new JGoTestRule();
 
-    @Test
-    public void terminatesEarly() {
-        // ...
-        test.terminateIf("unlikely", moon, madeOf("cheese"));
+      @Test
+      public void terminatesEarly() {
+          // ...
+          test.terminateIf("unlikely", moon, madeOf("cheese"));
 
-        // We may not get here
-        test.terminate("It's no use. I can't go on.");
+          // We may not get here
+          test.terminate("It's no use. I can't go on.");
 
-        // We definitely won't get here
-        throw new IllegalStateException("how did we get here?");
-    }
-}
-```
+          // We definitely won't get here
+          throw new IllegalStateException("how did we get here?");
+      }
+  }
+  ```
 
 ## Worth knowing about
 
