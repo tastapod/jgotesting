@@ -87,6 +87,9 @@ public class DelegateToStaticMethod implements InvocationHandler {
         return new MethodSignature(method);
     }
 
+    /**
+     * Invoke a static method and capture its error if it fails.
+     */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         MethodSignature key = buildMethodSignature(method);

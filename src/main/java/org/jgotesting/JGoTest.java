@@ -43,7 +43,7 @@ public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<J
     }
 
     @Override
-    public <V> JGoTest logWhen(String reason, V value, Matcher<? super V> matcher) {
+    public <V> JGoTest logIf(String reason, V value, Matcher<? super V> matcher) {
         if (matcher.matches(value)) {
             log(describeMatch(reason, value, matcher));
         }
@@ -51,8 +51,8 @@ public class JGoTest implements Reporting<JGoTest>, Checking<JGoTest>, Failing<J
     }
 
     @Override
-    public <V> JGoTest logWhen(V value, Matcher<? super V> matcher) {
-        logWhen("", value, matcher);
+    public <V> JGoTest logIf(V value, Matcher<? super V> matcher) {
+        logIf("", value, matcher);
         return this;
     }
 

@@ -19,12 +19,12 @@ public interface Reporting<T extends Reporting> { // "Logging" is already a load
     /**
      * Log if we match
      */
-    <V> T logWhen(V value, Matcher<? super V> matcher);
+    <V> T logIf(V value, Matcher<? super V> matcher);
 
     /**
      * Log with a reason if we match
      */
-    <V> T logWhen(String reason, V value, Matcher<? super V> matcher);
+    <V> T logIf(String reason, V value, Matcher<? super V> matcher);
 
     /**
      * Log if we don't match

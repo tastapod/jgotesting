@@ -18,23 +18,24 @@ public class ExampleUsingMatchers {
     public void logsMatchAndFails() throws Exception {
         // logging
         String value = "Some value";
-        logWhen(value, notNullValue());
+        logIf(value, notNullValue());
 
         String result = "Unexpected: the Spanish Inquisition!";
         logUnless(result, startsWith("Expected"));
 
         // failing
+        failIf(result, containsString("Spanish"));
         failUnless(value, nullValue());
-        failWhen(result, containsString("Spanish"));
 
-        terminateWhen(value, notNullValue());
+        // terminating
+        terminateIf(value, notNullValue());
 
-        fail("We never get here");
+        throw new IllegalStateException("We never get here");
     }
 
     @Test
     public void hasCustomMatcher() throws Exception {
-        failWhen(100, belowMinimumHeight(130));
+        failIf(100, belowMinimumHeight(130));
         failUnless(180, belowMinimumHeight(130));
     }
 

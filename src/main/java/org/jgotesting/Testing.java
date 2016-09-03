@@ -36,12 +36,12 @@ public class Testing {
 
     // Hamcrest matcher methods
 
-    public static <V> void logWhen(String reason, V value, Matcher<? super V> matcher) {
-        test().logWhen(reason, value, matcher);
+    public static <V> void logIf(String reason, V value, Matcher<? super V> matcher) {
+        test().logIf(reason, value, matcher);
     }
 
-    public static <V> void logWhen(V value, Matcher<? super V> matcher) {
-        test().logWhen(value, matcher);
+    public static <V> void logIf(V value, Matcher<? super V> matcher) {
+        test().logIf(value, matcher);
     }
 
     public static <V> void logUnless(String reason, V value, Matcher<? super V> matcher) {
@@ -52,11 +52,11 @@ public class Testing {
         test().logUnless(value, matcher);
     }
 
-    public static <V> void failWhen(String reason, V value, Matcher<? super V> matcher) {
+    public static <V> void failIf(String reason, V value, Matcher<? super V> matcher) {
         test().checkNot(reason, value, matcher);
     }
 
-    public static <V> void failWhen(V value, Matcher<? super V> matcher) {
+    public static <V> void failIf(V value, Matcher<? super V> matcher) {
         test().checkNot(value, matcher);
     }
 
@@ -68,11 +68,11 @@ public class Testing {
         test().check(value, matcher);
     }
 
-    public static <V> void terminateWhen(String reason, V value, Matcher<? super V> matcher) throws Exception {
+    public static <V> void terminateIf(String reason, V value, Matcher<? super V> matcher) throws Exception {
         test().terminateIf(reason, value, matcher);
     }
 
-    public static <V> void terminateWhen(V value, Matcher<? super V> matcher) throws Exception {
+    public static <V> void terminateIf(V value, Matcher<? super V> matcher) throws Exception {
         test().terminateIf(value, matcher);
     }
 
