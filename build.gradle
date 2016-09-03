@@ -54,9 +54,17 @@ def pomConfig = {
         developer {
             id 'dn'
             name 'Dan North'
-            email 'dan@dannorth.net'
-            url 'http://dannorth.net'
-            timezone 'Europe/London'
+            email 'dan@jgotesting.org'
+        }
+        developer {
+            id 'aa'
+            name 'Andres Almiray'
+            email 'andres@jgotesting.org'
+        }
+        developer {
+            id 'ro'
+            name 'Rickard Öberg'
+            email 'rickardoberg@gmail.com'
         }
     }
 }
