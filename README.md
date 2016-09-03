@@ -9,22 +9,21 @@
 ## Quick start
 
 1. Add a JGoTesting `@Rule` instance to your test class.
-
-  ```java import org.jgotesting.rule.JGoTestingRule;
+```java
+  import org.jgotesting.rule.JGoTestingRule;
 
   public class MyTest {
       @org.junit.Rule
       public final JGoTestRule test = new JGoTestRule();
   }
-  ```
+```
 
 2. Use JGoTesting's static `assertXxx` methods in place of the JUnit ones
    just by replacing an import. Or use the `checkXxx` ones if you prefer.
    All tests in a class with the `@Rule` will be managed by JGoTesting.
-
-  ```java import static org.jgotesting.Assert.*; // same methods as
-  org.junit.Assert.* import static org.jgotesting.Check.*; // ditto, with
-  different names
+```java
+  import static org.jgotesting.Assert.*; // same methods as org.junit.Assert.*
+  import static org.jgotesting.Check.*; // ditto, with different names
 
   public class MyTest {
 
@@ -46,15 +45,15 @@
           // Test fails with four errors. Sweet!
       }
   }
-  ```
+```
 
 3. The rule instance is a reference to the current test, so you can
    chain checks together. You can log messages that will only
    be printed if the test fails, using `log` methods. That way you can
    capture narrative about a test without having lots of verbose output
    for passing tests.
-
-  ```java public class MyTest {
+```java
+  public class MyTest {
 
       @Rule
       public final JGoTestRule test = new JGoTestRule();
@@ -74,12 +73,13 @@
           // Fails with four errors. Sweet!
       }
   }
-  ```
+```
+
 4. Sometimes a test fails and there is no point continuing. In that case
    you can terminate the test with a message, or throw an exception like
    you would elsewhere:
-
-  ```java public class MyTest {
+```java
+  public class MyTest {
 
       @Rule
       public final JGoTestRule test = new JGoTestRule();
@@ -96,7 +96,7 @@
           throw new IllegalStateException("how did we get here?");
       }
   }
-  ```
+```
 
 ## Worth knowing about
 
