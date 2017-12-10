@@ -4,7 +4,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'net.nemerosa.versioning' version '2.3.0'
+    id 'net.nemerosa.versioning' version '2.6.1'
 }
 
 repositories {
